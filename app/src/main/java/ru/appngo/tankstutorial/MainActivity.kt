@@ -9,6 +9,8 @@ import android.view.KeyEvent.KEYCODE_DPAD_RIGHT
 import android.view.KeyEvent.KEYCODE_DPAD_UP
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.appngo.tankstutorial.Direction.BOTTOM
@@ -23,6 +25,8 @@ const val VERTICAL_MAX_SIZE = CELL_SIZE * VERTICAL_CELL_AMOUNT
 const val HORIZONTAL_MAX_SIZE = CELL_SIZE * HORIZONTAL_CELL_AMOUNT
 
 class MainActivity : AppCompatActivity() {
+    private var editMode = false
+
     private val gridDrawer by lazy {
         GridDrawer(this)
     }
@@ -41,11 +45,22 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_settings -> {
-                gridDrawer.drawGrid()
+                switchEditMode()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun switchEditMode() {
+        if (editMode) {
+            gridDrawer.removeGrid()
+            materials_container.visibility = GONE
+        } else {
+            gridDrawer.drawGrid()
+            materials_container.visibility = VISIBLE
+        }
+        editMode = !editMode
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
