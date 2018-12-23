@@ -1,4 +1,4 @@
-package ru.appngo.tankstutorial
+package ru.appngo.tankstutorial.enums
 
 enum class Direction {
     UP,
