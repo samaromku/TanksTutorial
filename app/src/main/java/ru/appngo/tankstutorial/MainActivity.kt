@@ -12,7 +12,6 @@ import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.appngo.tankstutorial.drawers.ElementsDrawer
 import ru.appngo.tankstutorial.drawers.GridDrawer
-import ru.appngo.tankstutorial.enums.Direction
 import ru.appngo.tankstutorial.enums.Direction.*
 import ru.appngo.tankstutorial.enums.Material
 
@@ -75,43 +74,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
-            KEYCODE_DPAD_UP -> move(UP)
-            KEYCODE_DPAD_LEFT -> move(LEFT)
-            KEYCODE_DPAD_DOWN -> move(BOTTOM)
-            KEYCODE_DPAD_RIGHT -> move(RIGHT)
+            KEYCODE_DPAD_UP -> elementsDrawer.move(myTank, UP)
+            KEYCODE_DPAD_LEFT -> elementsDrawer.move(myTank, LEFT)
+            KEYCODE_DPAD_DOWN -> elementsDrawer.move(myTank, BOTTOM)
+            KEYCODE_DPAD_RIGHT -> elementsDrawer.move(myTank, RIGHT)
         }
         return super.onKeyDown(keyCode, event)
-    }
-
-    private fun move(direction: Direction) {
-        val layoutParams = myTank.layoutParams as FrameLayout.LayoutParams
-        when (direction) {
-            UP -> {
-                myTank.rotation = 0f
-                if (layoutParams.topMargin > 0) {
-                    (myTank.layoutParams as FrameLayout.LayoutParams).topMargin += -CELL_SIZE
-                }
-            }
-            BOTTOM -> {
-                myTank.rotation = 180f
-                if (layoutParams.topMargin + myTank.height < HORIZONTAL_MAX_SIZE) {
-                    (myTank.layoutParams as FrameLayout.LayoutParams).topMargin += CELL_SIZE
-                }
-            }
-            RIGHT -> {
-                myTank.rotation = 90f
-                if (layoutParams.leftMargin + myTank.width < VERTICAL_MAX_SIZE) {
-                    (myTank.layoutParams as FrameLayout.LayoutParams).leftMargin += CELL_SIZE
-                }
-            }
-            LEFT -> {
-                myTank.rotation = 270f
-                if (layoutParams.leftMargin > 0) {
-                    (myTank.layoutParams as FrameLayout.LayoutParams).leftMargin += -CELL_SIZE
-                }
-            }
-        }
-        container.removeView(myTank)
-        container.addView(myTank)
     }
 }
