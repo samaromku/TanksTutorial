@@ -3,16 +3,25 @@ package ru.appngo.tankstutorial
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
-import android.view.KeyEvent.*
+import android.view.KeyEvent.KEYCODE_DPAD_DOWN
+import android.view.KeyEvent.KEYCODE_DPAD_LEFT
+import android.view.KeyEvent.KEYCODE_DPAD_RIGHT
+import android.view.KeyEvent.KEYCODE_DPAD_UP
+import android.view.KeyEvent.KEYCODE_SPACE
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_main.*
+import ru.appngo.tankstutorial.drawers.BulletDrawer
 import ru.appngo.tankstutorial.drawers.ElementsDrawer
 import ru.appngo.tankstutorial.drawers.GridDrawer
-import ru.appngo.tankstutorial.enums.Direction.*
+import ru.appngo.tankstutorial.drawers.TankDrawer
+import ru.appngo.tankstutorial.enums.Direction.BOTTOM
+import ru.appngo.tankstutorial.enums.Direction.LEFT
+import ru.appngo.tankstutorial.enums.Direction.RIGHT
+import ru.appngo.tankstutorial.enums.Direction.UP
 import ru.appngo.tankstutorial.enums.Material
 
 const val CELL_SIZE = 50
@@ -30,6 +39,14 @@ class MainActivity : AppCompatActivity() {
 
     private val elementsDrawer by lazy {
         ElementsDrawer(container)
+    }
+
+    private val tankDrawer by lazy {
+        TankDrawer(container)
+    }
+
+    private val bulletDrawer by lazy {
+        BulletDrawer(container)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,10 +91,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
-            KEYCODE_DPAD_UP -> elementsDrawer.move(myTank, UP)
-            KEYCODE_DPAD_LEFT -> elementsDrawer.move(myTank, LEFT)
-            KEYCODE_DPAD_DOWN -> elementsDrawer.move(myTank, BOTTOM)
-            KEYCODE_DPAD_RIGHT -> elementsDrawer.move(myTank, RIGHT)
+            KEYCODE_DPAD_UP -> tankDrawer.move(myTank, UP, elementsDrawer.elementsOnContainer)
+            KEYCODE_DPAD_LEFT -> tankDrawer.move(myTank, LEFT, elementsDrawer.elementsOnContainer)
+            KEYCODE_DPAD_DOWN -> tankDrawer.move(myTank, BOTTOM, elementsDrawer.elementsOnContainer)
+            KEYCODE_DPAD_RIGHT -> tankDrawer.move(myTank, RIGHT, elementsDrawer.elementsOnContainer)
+            KEYCODE_SPACE -> bulletDrawer.drawBullet(myTank, tankDrawer.currentDirection)
         }
         return super.onKeyDown(keyCode, event)
     }
