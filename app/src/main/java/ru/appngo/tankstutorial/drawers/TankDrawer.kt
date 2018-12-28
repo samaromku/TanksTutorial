@@ -8,6 +8,7 @@ import ru.appngo.tankstutorial.VERTICAL_MAX_SIZE
 import ru.appngo.tankstutorial.enums.Direction
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
+import ru.appngo.tankstutorial.utils.checkViewCanMoveThroughBorder
 
 class TankDrawer(val container: FrameLayout) {
     var currentDirection = Direction.BOTTOM
@@ -32,7 +33,7 @@ class TankDrawer(val container: FrameLayout) {
             }
         }
         val nextCoordinate = Coordinate(layoutParams.topMargin, layoutParams.leftMargin) //save after change
-        if (checkTankCanMoveThroughBorder(nextCoordinate, myTank)
+        if (myTank.checkViewCanMoveThroughBorder(nextCoordinate)
             && checkTankCanMoveThroughMaterial(nextCoordinate, elementsOnContainer)
         ) {
             container.removeView(myTank)
