@@ -4,13 +4,11 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import ru.appngo.tankstutorial.CELL_SIZE
-import ru.appngo.tankstutorial.HORIZONTAL_MAX_SIZE
 import ru.appngo.tankstutorial.R
-import ru.appngo.tankstutorial.VERTICAL_MAX_SIZE
-import ru.appngo.tankstutorial.enums.Direction
 import ru.appngo.tankstutorial.enums.Material
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
+import ru.appngo.tankstutorial.utils.getElementByCoordinates
 
 class ElementsDrawer(val container: FrameLayout) {
 
@@ -29,7 +27,7 @@ class ElementsDrawer(val container: FrameLayout) {
     }
 
     private fun drawOrReplaceView(coordinate: Coordinate) {
-        val viewOnCoordinate = getElementByCoordinates(coordinate)
+        val viewOnCoordinate = getElementByCoordinates(coordinate, elementsOnContainer)
         if (viewOnCoordinate == null) {
             drawView(coordinate)
             return
@@ -44,11 +42,8 @@ class ElementsDrawer(val container: FrameLayout) {
         drawView(coordinate)
     }
 
-    private fun getElementByCoordinates(coordinate: Coordinate) =
-        elementsOnContainer.firstOrNull { it.coordinate == coordinate }
-
     private fun eraseView(coordinate: Coordinate) {
-        val elementOnCoordinate = getElementByCoordinates(coordinate)
+        val elementOnCoordinate = getElementByCoordinates(coordinate, elementsOnContainer)
         if (elementOnCoordinate != null) {
             val erasingView = container.findViewById<View>(elementOnCoordinate.viewId)
             container.removeView(erasingView)
@@ -72,6 +67,7 @@ class ElementsDrawer(val container: FrameLayout) {
         val viewId = View.generateViewId()
         view.id = viewId
         view.layoutParams = layoutParams
+
         container.addView(view)
         elementsOnContainer.add(Element(viewId, currentMaterial, coordinate))
     }

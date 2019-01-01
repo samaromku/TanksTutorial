@@ -3,15 +3,14 @@ package ru.appngo.tankstutorial.drawers
 import android.view.View
 import android.widget.FrameLayout
 import ru.appngo.tankstutorial.CELL_SIZE
-import ru.appngo.tankstutorial.HORIZONTAL_MAX_SIZE
-import ru.appngo.tankstutorial.VERTICAL_MAX_SIZE
 import ru.appngo.tankstutorial.enums.Direction
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
 import ru.appngo.tankstutorial.utils.checkViewCanMoveThroughBorder
+import ru.appngo.tankstutorial.utils.getElementByCoordinates
 
 class TankDrawer(val container: FrameLayout) {
-    var currentDirection = Direction.BOTTOM
+    var currentDirection = Direction.UP
 
     fun move(myTank: View, direction: Direction, elementsOnContainer: List<Element>) {
         val layoutParams = myTank.layoutParams as FrameLayout.LayoutParams
@@ -52,20 +51,6 @@ class TankDrawer(val container: FrameLayout) {
             }
         }
         return true
-    }
-
-    private fun getElementByCoordinates(coordinate: Coordinate, elementsOnContainer: List<Element>) =
-            elementsOnContainer.firstOrNull { it.coordinate == coordinate }
-
-    private fun checkTankCanMoveThroughBorder(coordinate: Coordinate, myTank: View): Boolean {
-        if (coordinate.top >= 0
-            && coordinate.top + myTank.height <= HORIZONTAL_MAX_SIZE
-            && coordinate.left >= 0
-            && coordinate.left + myTank.width <= VERTICAL_MAX_SIZE
-        ) {
-            return true
-        }
-        return false
     }
 
     private fun getTankCoordinates(topLeftCoordinate: Coordinate): List<Coordinate> {

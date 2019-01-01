@@ -4,6 +4,7 @@ import android.view.View
 import ru.appngo.tankstutorial.HORIZONTAL_MAX_SIZE
 import ru.appngo.tankstutorial.VERTICAL_MAX_SIZE
 import ru.appngo.tankstutorial.models.Coordinate
+import ru.appngo.tankstutorial.models.Element
 
 fun View.checkViewCanMoveThroughBorder(coordinate: Coordinate): Boolean {
     if (coordinate.top >= 0
@@ -15,3 +16,6 @@ fun View.checkViewCanMoveThroughBorder(coordinate: Coordinate): Boolean {
     }
     return false
 }
+
+fun getElementByCoordinates(coordinate: Coordinate, elementsOnContainer: List<Element>) =
+        elementsOnContainer.firstOrNull { it.coordinate == coordinate }
