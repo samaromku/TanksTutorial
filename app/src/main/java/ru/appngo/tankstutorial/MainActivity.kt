@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         editor_brick.setOnClickListener { elementsDrawer.currentMaterial = Material.BRICK }
         editor_concrete.setOnClickListener { elementsDrawer.currentMaterial = Material.CONCRETE }
         editor_grass.setOnClickListener { elementsDrawer.currentMaterial = Material.GRASS }
+        editor_eagle.setOnClickListener { elementsDrawer.currentMaterial = Material.EAGLE }
         container.setOnTouchListener { _, event ->
             elementsDrawer.onTouchContainer(event.x, event.y)
             return@setOnTouchListener true

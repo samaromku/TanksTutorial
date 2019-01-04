@@ -9,4 +9,5 @@ enum class Material(
     BRICK(false, false, true),
     CONCRETE(false, false, false),
     GRASS(true, true, false),
+    EAGLE(false, false, true),
 }
