@@ -11,6 +11,10 @@ import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
 import ru.appngo.tankstutorial.utils.getElementByCoordinates
 
+const val CELLS_SIMPLE_ELEMENT = 1
+const val CELLS_EAGLE_WIDTH = 4
+const val CELLS_EAGLE_HEIGHT = 3
+
 class ElementsDrawer(val container: FrameLayout) {
 
     var currentMaterial = Material.EMPTY
@@ -38,6 +42,16 @@ class ElementsDrawer(val container: FrameLayout) {
         }
     }
 
+    fun drawElementsList(elements: List<Element>?) {
+        if (elements == null) {
+            return
+        }
+        for (element in elements) {
+            currentMaterial = element.material
+            selectMaterial(element.coordinate)
+        }
+    }
+
     private fun replaceView(coordinate: Coordinate) {
         eraseView(coordinate)
         selectMaterial(coordinate)
@@ -59,7 +73,7 @@ class ElementsDrawer(val container: FrameLayout) {
             Material.GRASS -> drawView(R.drawable.grass, coordinate)
             Material.EAGLE -> {
                 removeExistingEagle()
-                drawView(R.drawable.eagle, coordinate, 4, 3)
+                drawView(R.drawable.eagle, coordinate, CELLS_EAGLE_WIDTH, CELLS_EAGLE_HEIGHT)
             }
             Material.EMPTY -> {
             }
@@ -73,8 +87,8 @@ class ElementsDrawer(val container: FrameLayout) {
     private fun drawView(
             @DrawableRes image: Int,
             coordinate: Coordinate,
-            width: Int = 1,
-            height: Int = 1
+            width: Int = CELLS_SIMPLE_ELEMENT,
+            height: Int = CELLS_SIMPLE_ELEMENT
     ) {
         val view = ImageView(container.context)
         val layoutParams = FrameLayout.LayoutParams(width * CELL_SIZE, height * CELL_SIZE)
