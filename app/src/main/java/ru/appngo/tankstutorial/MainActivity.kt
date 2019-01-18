@@ -69,6 +69,7 @@ class MainActivity : AppCompatActivity() {
             return@setOnTouchListener true
         }
         elementsDrawer.drawElementsList(levelStorage.loadLevel())
+        hideSettings()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -91,14 +92,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun switchEditMode() {
-        if (editMode) {
-            gridDrawer.removeGrid()
-            materials_container.visibility = GONE
-        } else {
-            gridDrawer.drawGrid()
-            materials_container.visibility = VISIBLE
-        }
         editMode = !editMode
+        if (editMode) {
+            showSettings()
+        } else {
+            hideSettings()
+        }
+    }
+
+    private fun showSettings() {
+        gridDrawer.drawGrid()
+        materials_container.visibility = VISIBLE
+        elementsDrawer.changeElementsVisibility(true)
+    }
+
+    private fun hideSettings() {
+        gridDrawer.removeGrid()
+        materials_container.visibility = GONE
+        elementsDrawer.changeElementsVisibility(false)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

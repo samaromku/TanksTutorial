@@ -14,69 +14,77 @@ enum class Material(
     val elementsAmountOnScreen: Int,
     val width: Int,
     val height: Int,
-    val image: Int?
+    val image: Int?,
+    val visibleInEditableMode: Boolean
 ) {
     EMPTY(
-            tankCanGoThrough = true,
-            bulletCanGoThrough = true,
-            simpleBulletCanDestroy = true,
-            elementsAmountOnScreen = 0,
-            width = 0,
-            height = 0,
-            image = null
+        tankCanGoThrough = true,
+        bulletCanGoThrough = true,
+        simpleBulletCanDestroy = true,
+        elementsAmountOnScreen = 0,
+        width = 0,
+        height = 0,
+        image = null,
+        visibleInEditableMode = false
     ),
     BRICK(
-            tankCanGoThrough = false,
-            bulletCanGoThrough = false,
-            simpleBulletCanDestroy = true,
-            elementsAmountOnScreen = 0,
-            width = CELLS_SIMPLE_ELEMENT,
-            height = CELLS_SIMPLE_ELEMENT,
-            image = R.drawable.brick
+        tankCanGoThrough = false,
+        bulletCanGoThrough = false,
+        simpleBulletCanDestroy = true,
+        elementsAmountOnScreen = 0,
+        width = CELLS_SIMPLE_ELEMENT,
+        height = CELLS_SIMPLE_ELEMENT,
+        image = R.drawable.brick,
+        visibleInEditableMode = false
     ),
     CONCRETE(
-            tankCanGoThrough = false,
-            bulletCanGoThrough = false,
-            simpleBulletCanDestroy = false,
-            elementsAmountOnScreen = 0,
-            width = CELLS_SIMPLE_ELEMENT,
-            height = CELLS_SIMPLE_ELEMENT,
-            image = R.drawable.concrete
+        tankCanGoThrough = false,
+        bulletCanGoThrough = false,
+        simpleBulletCanDestroy = false,
+        elementsAmountOnScreen = 0,
+        width = CELLS_SIMPLE_ELEMENT,
+        height = CELLS_SIMPLE_ELEMENT,
+        image = R.drawable.concrete,
+        visibleInEditableMode = false
     ),
     GRASS(
-            tankCanGoThrough = true,
-            bulletCanGoThrough = true,
-            simpleBulletCanDestroy = false,
-            elementsAmountOnScreen = 0,
-            width = CELLS_SIMPLE_ELEMENT,
-            height = CELLS_SIMPLE_ELEMENT,
-            image = R.drawable.grass
+        tankCanGoThrough = true,
+        bulletCanGoThrough = true,
+        simpleBulletCanDestroy = false,
+        elementsAmountOnScreen = 0,
+        width = CELLS_SIMPLE_ELEMENT,
+        height = CELLS_SIMPLE_ELEMENT,
+        image = R.drawable.grass,
+        visibleInEditableMode = false
     ),
     EAGLE(
-            tankCanGoThrough = false,
-            bulletCanGoThrough = false,
-            simpleBulletCanDestroy = true,
-            elementsAmountOnScreen = 1,
-            width = CELLS_EAGLE_WIDTH,
-            height = CELLS_EAGLE_HEIGHT,
-            image = R.drawable.eagle
+        tankCanGoThrough = false,
+        bulletCanGoThrough = false,
+        simpleBulletCanDestroy = true,
+        elementsAmountOnScreen = 1,
+        width = CELLS_EAGLE_WIDTH,
+        height = CELLS_EAGLE_HEIGHT,
+        image = R.drawable.eagle,
+        visibleInEditableMode = false
     ),
     ENEMY_TANK_RESPAWN(
-            tankCanGoThrough = false,
-            bulletCanGoThrough = false,
-            simpleBulletCanDestroy = true,
-            elementsAmountOnScreen = 3,
-            width = CELLS_TANKS_SIZE,
-            height = CELLS_TANKS_SIZE,
-            image = R.drawable.enemy_tank
+        tankCanGoThrough = true,
+        bulletCanGoThrough = true,
+        simpleBulletCanDestroy = false,
+        elementsAmountOnScreen = 3,
+        width = CELLS_TANKS_SIZE,
+        height = CELLS_TANKS_SIZE,
+        image = R.drawable.enemy_tank,
+        visibleInEditableMode = true
     ),
     PLAYER_TANK_RESPAWN(
-            tankCanGoThrough = false,
-            bulletCanGoThrough = false,
-            simpleBulletCanDestroy = true,
-            elementsAmountOnScreen = 1,
-            width = CELLS_TANKS_SIZE,
-            height = CELLS_TANKS_SIZE,
-            image = R.drawable.tank
+        tankCanGoThrough = true,
+        bulletCanGoThrough = true,
+        simpleBulletCanDestroy = false,
+        elementsAmountOnScreen = 1,
+        width = CELLS_TANKS_SIZE,
+        height = CELLS_TANKS_SIZE,
+        image = R.drawable.tank,
+        visibleInEditableMode = true
     ),
 }
