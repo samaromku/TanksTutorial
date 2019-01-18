@@ -62,6 +62,8 @@ class MainActivity : AppCompatActivity() {
         editor_concrete.setOnClickListener { elementsDrawer.currentMaterial = Material.CONCRETE }
         editor_grass.setOnClickListener { elementsDrawer.currentMaterial = Material.GRASS }
         editor_eagle.setOnClickListener { elementsDrawer.currentMaterial = Material.EAGLE }
+        editor_enemy_respawn.setOnClickListener { elementsDrawer.currentMaterial = Material.ENEMY_TANK_RESPAWN }
+        editor_player_respawn.setOnClickListener { elementsDrawer.currentMaterial = Material.PLAYER_TANK_RESPAWN }
         container.setOnTouchListener { _, event ->
             elementsDrawer.onTouchContainer(event.x, event.y)
             return@setOnTouchListener true

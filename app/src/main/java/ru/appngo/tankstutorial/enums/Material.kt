@@ -5,21 +5,22 @@ import ru.appngo.tankstutorial.R
 const val CELLS_SIMPLE_ELEMENT = 1
 const val CELLS_EAGLE_WIDTH = 4
 const val CELLS_EAGLE_HEIGHT = 3
+const val CELLS_TANKS_SIZE = 2
 
 enum class Material(
-        val tankCanGoThrough: Boolean,
-        val bulletCanGoThrough: Boolean,
-        val simpleBulletCanDestroy: Boolean,
-        val canExistOnlyOne: Boolean,
-        val width: Int,
-        val height: Int,
-        val image: Int?
+    val tankCanGoThrough: Boolean,
+    val bulletCanGoThrough: Boolean,
+    val simpleBulletCanDestroy: Boolean,
+    val elementsAmountOnScreen: Int,
+    val width: Int,
+    val height: Int,
+    val image: Int?
 ) {
     EMPTY(
             tankCanGoThrough = true,
             bulletCanGoThrough = true,
             simpleBulletCanDestroy = true,
-            canExistOnlyOne = false,
+            elementsAmountOnScreen = 0,
             width = 0,
             height = 0,
             image = null
@@ -28,7 +29,7 @@ enum class Material(
             tankCanGoThrough = false,
             bulletCanGoThrough = false,
             simpleBulletCanDestroy = true,
-            canExistOnlyOne = false,
+            elementsAmountOnScreen = 0,
             width = CELLS_SIMPLE_ELEMENT,
             height = CELLS_SIMPLE_ELEMENT,
             image = R.drawable.brick
@@ -37,7 +38,7 @@ enum class Material(
             tankCanGoThrough = false,
             bulletCanGoThrough = false,
             simpleBulletCanDestroy = false,
-            canExistOnlyOne = false,
+            elementsAmountOnScreen = 0,
             width = CELLS_SIMPLE_ELEMENT,
             height = CELLS_SIMPLE_ELEMENT,
             image = R.drawable.concrete
@@ -46,7 +47,7 @@ enum class Material(
             tankCanGoThrough = true,
             bulletCanGoThrough = true,
             simpleBulletCanDestroy = false,
-            canExistOnlyOne = false,
+            elementsAmountOnScreen = 0,
             width = CELLS_SIMPLE_ELEMENT,
             height = CELLS_SIMPLE_ELEMENT,
             image = R.drawable.grass
@@ -55,9 +56,27 @@ enum class Material(
             tankCanGoThrough = false,
             bulletCanGoThrough = false,
             simpleBulletCanDestroy = true,
-            canExistOnlyOne = true,
+            elementsAmountOnScreen = 1,
             width = CELLS_EAGLE_WIDTH,
             height = CELLS_EAGLE_HEIGHT,
             image = R.drawable.eagle
+    ),
+    ENEMY_TANK_RESPAWN(
+            tankCanGoThrough = false,
+            bulletCanGoThrough = false,
+            simpleBulletCanDestroy = true,
+            elementsAmountOnScreen = 3,
+            width = CELLS_TANKS_SIZE,
+            height = CELLS_TANKS_SIZE,
+            image = R.drawable.enemy_tank
+    ),
+    PLAYER_TANK_RESPAWN(
+            tankCanGoThrough = false,
+            bulletCanGoThrough = false,
+            simpleBulletCanDestroy = true,
+            elementsAmountOnScreen = 1,
+            width = CELLS_TANKS_SIZE,
+            height = CELLS_TANKS_SIZE,
+            image = R.drawable.tank
     ),
 }
