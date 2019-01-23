@@ -66,20 +66,6 @@
             android:layout_margin="8dp"
             android:src="@drawable/eagle" />
 
-        <ImageView
-            android:id="@+id/editor_enemy_respawn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="8dp"
-            android:src="@drawable/enemy_tank" />
-
-        <ImageView
-            android:id="@+id/editor_player_respawn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="8dp"
-            android:src="@drawable/tank" />
-
     </LinearLayout>
 </FrameLayout>
 

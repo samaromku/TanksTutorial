@@ -14,8 +14,7 @@ enum class Material(
     val elementsAmountOnScreen: Int,
     val width: Int,
     val height: Int,
-    val image: Int?,
-    val visibleInEditableMode: Boolean
+    val image: Int?
 ) {
     EMPTY(
         tankCanGoThrough = true,
@@ -24,8 +23,7 @@ enum class Material(
         elementsAmountOnScreen = 0,
         width = 0,
         height = 0,
-        image = null,
-        visibleInEditableMode = false
+        image = null
     ),
     BRICK(
         tankCanGoThrough = false,
@@ -34,8 +32,7 @@ enum class Material(
         elementsAmountOnScreen = 0,
         width = CELLS_SIMPLE_ELEMENT,
         height = CELLS_SIMPLE_ELEMENT,
-        image = R.drawable.brick,
-        visibleInEditableMode = false
+        image = R.drawable.brick
     ),
     CONCRETE(
         tankCanGoThrough = false,
@@ -44,8 +41,7 @@ enum class Material(
         elementsAmountOnScreen = 0,
         width = CELLS_SIMPLE_ELEMENT,
         height = CELLS_SIMPLE_ELEMENT,
-        image = R.drawable.concrete,
-        visibleInEditableMode = false
+        image = R.drawable.concrete
     ),
     GRASS(
         tankCanGoThrough = true,
@@ -54,8 +50,7 @@ enum class Material(
         elementsAmountOnScreen = 0,
         width = CELLS_SIMPLE_ELEMENT,
         height = CELLS_SIMPLE_ELEMENT,
-        image = R.drawable.grass,
-        visibleInEditableMode = false
+        image = R.drawable.grass
     ),
     EAGLE(
         tankCanGoThrough = false,
@@ -64,8 +59,7 @@ enum class Material(
         elementsAmountOnScreen = 1,
         width = CELLS_EAGLE_WIDTH,
         height = CELLS_EAGLE_HEIGHT,
-        image = R.drawable.eagle,
-        visibleInEditableMode = false
+        image = R.drawable.eagle
     ),
     ENEMY_TANK_RESPAWN(
         tankCanGoThrough = true,
@@ -74,8 +68,7 @@ enum class Material(
         elementsAmountOnScreen = 3,
         width = CELLS_TANKS_SIZE,
         height = CELLS_TANKS_SIZE,
-        image = R.drawable.enemy_tank,
-        visibleInEditableMode = true
+        image = R.drawable.enemy_tank
     ),
     PLAYER_TANK_RESPAWN(
         tankCanGoThrough = true,
@@ -84,7 +77,6 @@ enum class Material(
         elementsAmountOnScreen = 1,
         width = CELLS_TANKS_SIZE,
         height = CELLS_TANKS_SIZE,
-        image = R.drawable.tank,
-        visibleInEditableMode = true
+        image = R.drawable.tank
     ),
 }
