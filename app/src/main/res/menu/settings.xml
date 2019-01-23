@@ -12,4 +12,10 @@
         android:icon="@drawable/ic_save"
         android:title="@string/save"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_play"
+        android:icon="@drawable/ic_play"
+        android:title="@string/play"
+        app:showAsAction="ifRoom" />
 </menu>

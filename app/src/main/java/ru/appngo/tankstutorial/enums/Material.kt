@@ -61,22 +61,13 @@ enum class Material(
         height = CELLS_EAGLE_HEIGHT,
         image = R.drawable.eagle
     ),
-    ENEMY_TANK_RESPAWN(
-        tankCanGoThrough = true,
-        bulletCanGoThrough = true,
-        simpleBulletCanDestroy = false,
-        elementsAmountOnScreen = 3,
+    ENEMY_TANK(
+        tankCanGoThrough = false,
+        bulletCanGoThrough = false,
+        simpleBulletCanDestroy = true,
+        elementsAmountOnScreen = 0,
         width = CELLS_TANKS_SIZE,
         height = CELLS_TANKS_SIZE,
         image = R.drawable.enemy_tank
-    ),
-    PLAYER_TANK_RESPAWN(
-        tankCanGoThrough = true,
-        bulletCanGoThrough = true,
-        simpleBulletCanDestroy = false,
-        elementsAmountOnScreen = 1,
-        width = CELLS_TANKS_SIZE,
-        height = CELLS_TANKS_SIZE,
-        image = R.drawable.tank
     ),
 }

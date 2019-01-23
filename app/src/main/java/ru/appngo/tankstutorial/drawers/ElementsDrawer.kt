@@ -2,11 +2,11 @@ package ru.appngo.tankstutorial.drawers
 
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.ImageView
 import ru.appngo.tankstutorial.CELL_SIZE
 import ru.appngo.tankstutorial.enums.Material
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
+import ru.appngo.tankstutorial.utils.drawElement
 import ru.appngo.tankstutorial.utils.getElementByCoordinates
 
 class ElementsDrawer(val container: FrameLayout) {
@@ -86,24 +86,13 @@ class ElementsDrawer(val container: FrameLayout) {
 
     private fun drawView(coordinate: Coordinate) {
         removeUnwantedInstances()
-        val view = ImageView(container.context)
-        val layoutParams = FrameLayout.LayoutParams(
-            currentMaterial.width * CELL_SIZE,
-            currentMaterial.height * CELL_SIZE
-        )
-        currentMaterial.image?.let { view.setImageResource(it) }
-        layoutParams.topMargin = coordinate.top
-        layoutParams.leftMargin = coordinate.left
         val element = Element(
             material = currentMaterial,
             coordinate = coordinate,
             width = currentMaterial.width,
             height = currentMaterial.height
         )
-        view.id = element.viewId
-        view.layoutParams = layoutParams
-        view.scaleType = ImageView.ScaleType.FIT_XY
-        container.addView(view)
+        element.drawElement(container)
         elementsOnContainer.add(element)
     }
 
