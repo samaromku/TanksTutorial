@@ -6,7 +6,7 @@ import ru.appngo.tankstutorial.enums.Material
 data class Element (
         val viewId: Int = View.generateViewId(),
         val material: Material,
-        val coordinate: Coordinate,
+        var coordinate: Coordinate,
         val width: Int,
         val height: Int
 )

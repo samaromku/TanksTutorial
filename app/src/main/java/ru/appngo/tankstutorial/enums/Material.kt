@@ -70,4 +70,13 @@ enum class Material(
         height = CELLS_TANKS_SIZE,
         image = R.drawable.enemy_tank
     ),
+    PLAYER_TANK(
+        tankCanGoThrough = false,
+        bulletCanGoThrough = false,
+        simpleBulletCanDestroy = true,
+        elementsAmountOnScreen = 0,
+        width = CELLS_TANKS_SIZE,
+        height = CELLS_TANKS_SIZE,
+        image = R.drawable.tank
+    ),
 }

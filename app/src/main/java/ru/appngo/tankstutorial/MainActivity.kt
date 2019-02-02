@@ -10,9 +10,16 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_main.*
-import ru.appngo.tankstutorial.drawers.*
+import ru.appngo.tankstutorial.drawers.BulletDrawer
+import ru.appngo.tankstutorial.drawers.ElementsDrawer
+import ru.appngo.tankstutorial.drawers.EnemyDrawer
+import ru.appngo.tankstutorial.drawers.GridDrawer
+import ru.appngo.tankstutorial.enums.Direction
 import ru.appngo.tankstutorial.enums.Direction.*
-import ru.appngo.tankstutorial.enums.Material
+import ru.appngo.tankstutorial.enums.Material.*
+import ru.appngo.tankstutorial.models.Coordinate
+import ru.appngo.tankstutorial.models.Element
+import ru.appngo.tankstutorial.models.Tank
 
 const val CELL_SIZE = 50
 const val VERTICAL_CELL_AMOUNT = 38
@@ -22,6 +29,15 @@ const val HORIZONTAL_MAX_SIZE = CELL_SIZE * HORIZONTAL_CELL_AMOUNT
 
 class MainActivity : AppCompatActivity() {
     private var editMode = false
+    private val playerTank = Tank(
+        Element(
+            R.id.myTank,
+            PLAYER_TANK,
+            Coordinate(0, 0),
+            PLAYER_TANK.width,
+            PLAYER_TANK.height
+        ), UP
+    )
 
     private val gridDrawer by lazy {
         GridDrawer(container)
@@ -29,10 +45,6 @@ class MainActivity : AppCompatActivity() {
 
     private val elementsDrawer by lazy {
         ElementsDrawer(container)
-    }
-
-    private val tankDrawer by lazy {
-        TankDrawer(container)
     }
 
     private val bulletDrawer by lazy {
@@ -51,17 +63,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         container.layoutParams = FrameLayout.LayoutParams(VERTICAL_MAX_SIZE, HORIZONTAL_MAX_SIZE)
-        editor_clear.setOnClickListener { elementsDrawer.currentMaterial = Material.EMPTY }
-        editor_brick.setOnClickListener { elementsDrawer.currentMaterial = Material.BRICK }
-        editor_concrete.setOnClickListener { elementsDrawer.currentMaterial = Material.CONCRETE }
-        editor_grass.setOnClickListener { elementsDrawer.currentMaterial = Material.GRASS }
-        editor_eagle.setOnClickListener { elementsDrawer.currentMaterial = Material.EAGLE }
+        editor_clear.setOnClickListener { elementsDrawer.currentMaterial = EMPTY }
+        editor_brick.setOnClickListener { elementsDrawer.currentMaterial = BRICK }
+        editor_concrete.setOnClickListener { elementsDrawer.currentMaterial = CONCRETE }
+        editor_grass.setOnClickListener { elementsDrawer.currentMaterial = GRASS }
+        editor_eagle.setOnClickListener { elementsDrawer.currentMaterial = EAGLE }
         container.setOnTouchListener { _, event ->
             elementsDrawer.onTouchContainer(event.x, event.y)
             return@setOnTouchListener true
         }
         elementsDrawer.drawElementsList(levelStorage.loadLevel())
         hideSettings()
+        elementsDrawer.elementsOnContainer.add(playerTank.element)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -115,16 +128,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         when (keyCode) {
-            KEYCODE_DPAD_UP -> tankDrawer.move(myTank, UP, elementsDrawer.elementsOnContainer)
-            KEYCODE_DPAD_LEFT -> tankDrawer.move(myTank, LEFT, elementsDrawer.elementsOnContainer)
-            KEYCODE_DPAD_DOWN -> tankDrawer.move(myTank, BOTTOM, elementsDrawer.elementsOnContainer)
-            KEYCODE_DPAD_RIGHT -> tankDrawer.move(myTank, RIGHT, elementsDrawer.elementsOnContainer)
+            KEYCODE_DPAD_UP -> move(UP)
+            KEYCODE_DPAD_LEFT -> move(LEFT)
+            KEYCODE_DPAD_DOWN -> move(BOTTOM)
+            KEYCODE_DPAD_RIGHT -> move(RIGHT)
             KEYCODE_SPACE -> bulletDrawer.makeBulletMove(
                 myTank,
-                tankDrawer.currentDirection,
+                playerTank.direction,
                 elementsDrawer.elementsOnContainer
             )
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    private fun move(direction: Direction) {
+        playerTank.move(direction, container, elementsDrawer.elementsOnContainer)
     }
 }

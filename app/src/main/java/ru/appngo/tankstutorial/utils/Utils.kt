@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import kotlinx.android.synthetic.main.activity_main.view.*
 import ru.appngo.tankstutorial.CELL_SIZE
 import ru.appngo.tankstutorial.HORIZONTAL_MAX_SIZE
 import ru.appngo.tankstutorial.VERTICAL_MAX_SIZE
@@ -51,7 +52,13 @@ fun Element.drawElement(container: FrameLayout) {
     view.id = this.viewId
     view.layoutParams = layoutParams
     view.scaleType = ImageView.ScaleType.FIT_XY
-    (container.context as Activity).runOnUiThread {
+    container.runOnUiThread {
         container.addView(view)
+    }
+}
+
+fun FrameLayout.runOnUiThread(block: () -> Unit) {
+    (this.context as Activity).runOnUiThread {
+        block()
     }
 }
