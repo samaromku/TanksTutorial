@@ -4,8 +4,11 @@ import android.view.View
 import android.widget.FrameLayout
 import ru.appngo.tankstutorial.CELL_SIZE
 import ru.appngo.tankstutorial.enums.Direction
+import ru.appngo.tankstutorial.enums.Material
 import ru.appngo.tankstutorial.utils.checkViewCanMoveThroughBorder
 import ru.appngo.tankstutorial.utils.getElementByCoordinates
+import ru.appngo.tankstutorial.utils.runOnUiThread
+import kotlin.random.Random
 
 class Tank(
     val element: Element,
@@ -24,13 +27,27 @@ class Tank(
         if (view.checkViewCanMoveThroughBorder(nextCoordinate)
             && element.checkTankCanMoveThroughMaterial(nextCoordinate, elementsOnContainer)
         ) {
-            container.removeView(view)
-            container.addView(view, 0)
+            emulateViewMoving(container, view)
             element.coordinate = nextCoordinate
         } else {
             element.coordinate = currentCoordinate
             (view.layoutParams as FrameLayout.LayoutParams).topMargin = currentCoordinate.top
             (view.layoutParams as FrameLayout.LayoutParams).leftMargin = currentCoordinate.left
+            changeDirectionForEnemyTank()
+        }
+    }
+
+    private fun changeDirectionForEnemyTank() {
+        if (element.material == Material.ENEMY_TANK) {
+            val randomDirection = Direction.values()[Random.nextInt(Direction.values().size)]
+            this.direction = randomDirection
+        }
+    }
+
+    private fun emulateViewMoving(container: FrameLayout, view: View) {
+        container.runOnUiThread {
+            container.removeView(view)
+            container.addView(view, 0)
         }
     }
 

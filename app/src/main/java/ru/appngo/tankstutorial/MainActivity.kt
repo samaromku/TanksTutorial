@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val enemyDrawer by lazy {
-        EnemyDrawer(container)
+        EnemyDrawer(container, elementsDrawer.elementsOnContainer)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,7 +104,8 @@ class MainActivity : AppCompatActivity() {
         if (editMode) {
             return
         }
-        enemyDrawer.startEnemyDrawing(elementsDrawer.elementsOnContainer)
+        enemyDrawer.startEnemyCreation()
+        enemyDrawer.moveEnemyTanks()
     }
 
     private fun switchEditMode() {
