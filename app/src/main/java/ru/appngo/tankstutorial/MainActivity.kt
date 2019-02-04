@@ -26,17 +26,31 @@ const val VERTICAL_CELL_AMOUNT = 38
 const val HORIZONTAL_CELL_AMOUNT = 25
 const val VERTICAL_MAX_SIZE = CELL_SIZE * VERTICAL_CELL_AMOUNT
 const val HORIZONTAL_MAX_SIZE = CELL_SIZE * HORIZONTAL_CELL_AMOUNT
+const val HALF_WIDTH_OF_CONTAINER = VERTICAL_MAX_SIZE / 2
 
 class MainActivity : AppCompatActivity() {
     private var editMode = false
     private val playerTank = Tank(
         Element(
-            R.id.myTank,
-            PLAYER_TANK,
-            Coordinate(0, 0),
-            PLAYER_TANK.width,
-            PLAYER_TANK.height
+            material = PLAYER_TANK,
+            coordinate = getPlayerTankCoordinate()
         ), UP
+    )
+
+    private fun getPlayerTankCoordinate() = Coordinate(
+        top = HORIZONTAL_MAX_SIZE - PLAYER_TANK.height * CELL_SIZE,
+        left = HALF_WIDTH_OF_CONTAINER - 8 * CELL_SIZE
+    )
+
+    private val eagle = Element(
+        material = EAGLE,
+        coordinate = getEagleCoordinate()
+    )
+
+
+    private fun getEagleCoordinate() = Coordinate(
+        top = HORIZONTAL_MAX_SIZE - EAGLE.height * CELL_SIZE,
+        left = HALF_WIDTH_OF_CONTAINER - EAGLE.width * CELL_SIZE / 2
     )
 
     private val gridDrawer by lazy {
@@ -73,8 +87,8 @@ class MainActivity : AppCompatActivity() {
             return@setOnTouchListener true
         }
         elementsDrawer.drawElementsList(levelStorage.loadLevel())
+        elementsDrawer.drawElementsList(listOf(playerTank.element, eagle))
         hideSettings()
-        elementsDrawer.elementsOnContainer.add(playerTank.element)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -134,7 +148,7 @@ class MainActivity : AppCompatActivity() {
             KEYCODE_DPAD_DOWN -> move(BOTTOM)
             KEYCODE_DPAD_RIGHT -> move(RIGHT)
             KEYCODE_SPACE -> bulletDrawer.makeBulletMove(
-                myTank,
+                container.findViewById(playerTank.element.viewId),
                 playerTank.direction,
                 elementsDrawer.elementsOnContainer
             )

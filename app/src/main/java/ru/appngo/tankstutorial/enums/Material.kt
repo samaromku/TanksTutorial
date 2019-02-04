@@ -74,7 +74,7 @@ enum class Material(
         tankCanGoThrough = false,
         bulletCanGoThrough = false,
         simpleBulletCanDestroy = true,
-        elementsAmountOnScreen = 0,
+        elementsAmountOnScreen = 1,
         width = CELLS_TANKS_SIZE,
         height = CELLS_TANKS_SIZE,
         image = R.drawable.tank
