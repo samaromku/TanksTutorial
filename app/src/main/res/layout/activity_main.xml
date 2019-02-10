@@ -51,13 +51,6 @@
             android:layout_margin="8dp"
             android:src="@drawable/grass" />
 
-        <ImageView
-            android:id="@+id/editor_eagle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="8dp"
-            android:src="@drawable/eagle" />
-
     </LinearLayout>
 </FrameLayout>
 

@@ -7,8 +7,10 @@ import android.widget.ImageView
 import ru.appngo.tankstutorial.CELL_SIZE
 import ru.appngo.tankstutorial.R
 import ru.appngo.tankstutorial.enums.Direction
+import ru.appngo.tankstutorial.enums.Material
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
+import ru.appngo.tankstutorial.models.Tank
 import ru.appngo.tankstutorial.utils.checkViewCanMoveThroughBorder
 import ru.appngo.tankstutorial.utils.getElementByCoordinates
 import ru.appngo.tankstutorial.utils.runOnUiThread
@@ -20,15 +22,25 @@ class BulletDrawer(private val container: FrameLayout) {
 
     private var canBulletGoFurther = true
     private var bulletThread: Thread? = null
+    private lateinit var tank: Tank
 
     private fun checkBulletThreadAlive() = bulletThread != null && bulletThread!!.isAlive
 
-    fun makeBulletMove(myTank: View, currentDirection: Direction, elementsOnContainer: MutableList<Element>) {
+    fun makeBulletMove(tank: Tank, elementsOnContainer: MutableList<Element>) {
         canBulletGoFurther = true
+        this.tank = tank
+        val currentDirection = tank.direction
         if (!checkBulletThreadAlive()) {
             bulletThread = Thread(Runnable {
-                val bullet = createBullet(myTank, currentDirection)
-                while (bullet.checkViewCanMoveThroughBorder(Coordinate(bullet.top, bullet.left)) && canBulletGoFurther) {
+                val view = container.findViewById<View>(this.tank.element.viewId) ?: return@Runnable
+                val bullet = createBullet(view, currentDirection)
+                while (bullet.checkViewCanMoveThroughBorder(
+                        Coordinate(
+                            bullet.top,
+                            bullet.left
+                        )
+                    ) && canBulletGoFurther
+                ) {
                     when (currentDirection) {
                         Direction.UP -> (bullet.layoutParams as FrameLayout.LayoutParams).topMargin -= BULLET_HEIGHT
                         Direction.BOTTOM -> (bullet.layoutParams as FrameLayout.LayoutParams).topMargin += BULLET_HEIGHT
@@ -37,11 +49,13 @@ class BulletDrawer(private val container: FrameLayout) {
                     }
                     Thread.sleep(30)
                     chooseBehaviorInTermsOfDirections(
-                            elementsOnContainer,
-                            currentDirection,
-                            Coordinate(
-                                    (bullet.layoutParams as FrameLayout.LayoutParams).topMargin,
-                                    (bullet.layoutParams as FrameLayout.LayoutParams).leftMargin))
+                        elementsOnContainer,
+                        currentDirection,
+                        Coordinate(
+                            (bullet.layoutParams as FrameLayout.LayoutParams).topMargin,
+                            (bullet.layoutParams as FrameLayout.LayoutParams).leftMargin
+                        )
+                    )
                     container.runOnUiThread {
                         container.removeView(bullet)
                         container.addView(bullet)
@@ -56,9 +70,9 @@ class BulletDrawer(private val container: FrameLayout) {
     }
 
     private fun chooseBehaviorInTermsOfDirections(
-            elementsOnContainer: MutableList<Element>,
-            currentDirection: Direction,
-            bulletCoordinate: Coordinate
+        elementsOnContainer: MutableList<Element>,
+        currentDirection: Direction,
+        bulletCoordinate: Coordinate
     ) {
         when (currentDirection) {
             Direction.BOTTOM, Direction.UP -> {
@@ -71,11 +85,14 @@ class BulletDrawer(private val container: FrameLayout) {
     }
 
     private fun compareCollections(
-            elementsOnContainer: MutableList<Element>,
-            detectedCoordinatesList: List<Coordinate>
+        elementsOnContainer: MutableList<Element>,
+        detectedCoordinatesList: List<Coordinate>
     ) {
-        detectedCoordinatesList.forEach {
-            val element = getElementByCoordinates(it, elementsOnContainer)
+        for (coordinate in detectedCoordinatesList) {
+            val element = getElementByCoordinates(coordinate, elementsOnContainer)
+            if (element == tank.element) {
+                continue
+            }
             removeElementsAndStopBullet(element, elementsOnContainer)
         }
     }
@@ -83,6 +100,10 @@ class BulletDrawer(private val container: FrameLayout) {
     private fun removeElementsAndStopBullet(element: Element?, elementsOnContainer: MutableList<Element>) {
         if (element != null) {
             if (element.material.bulletCanGoThrough) {
+                return
+            }
+            if (tank.element.material == Material.ENEMY_TANK && element.material == Material.ENEMY_TANK) {
+                stopBullet()
                 return
             }
             if (element.material.simpleBulletCanDestroy) {
@@ -111,8 +132,9 @@ class BulletDrawer(private val container: FrameLayout) {
         val rightCell = leftCell + CELL_SIZE
         val topCoordinate = bulletCoordinate.top - bulletCoordinate.top % CELL_SIZE
         return listOf(
-                Coordinate(topCoordinate, leftCell),
-                Coordinate(topCoordinate, rightCell))
+            Coordinate(topCoordinate, leftCell),
+            Coordinate(topCoordinate, rightCell)
+        )
     }
 
     private fun getCoordinatesForLeftOrRightDirection(bulletCoordinate: Coordinate): List<Coordinate> {
@@ -120,45 +142,50 @@ class BulletDrawer(private val container: FrameLayout) {
         val bottomCell = topCell + CELL_SIZE
         val leftCoordinate = bulletCoordinate.left - bulletCoordinate.left % CELL_SIZE
         return listOf(
-                Coordinate(topCell, leftCoordinate),
-                Coordinate(bottomCell, leftCoordinate))
+            Coordinate(topCell, leftCoordinate),
+            Coordinate(bottomCell, leftCoordinate)
+        )
     }
 
     private fun createBullet(myTank: View, currentDirection: Direction): ImageView {
         return ImageView(container.context)
-                .apply {
-                    this.setImageResource(R.drawable.bullet)
-                    this.layoutParams = FrameLayout.LayoutParams(BULLET_WIDTH, BULLET_HEIGHT)
-                    val bulletCoordinate = getBulletCoordinates(this, myTank, currentDirection)
-                    (this.layoutParams as FrameLayout.LayoutParams).topMargin = bulletCoordinate.top
-                    (this.layoutParams as FrameLayout.LayoutParams).leftMargin = bulletCoordinate.left
-                    this.rotation = currentDirection.rotation
-                }
+            .apply {
+                this.setImageResource(R.drawable.bullet)
+                this.layoutParams = FrameLayout.LayoutParams(BULLET_WIDTH, BULLET_HEIGHT)
+                val bulletCoordinate = getBulletCoordinates(this, myTank, currentDirection)
+                (this.layoutParams as FrameLayout.LayoutParams).topMargin = bulletCoordinate.top
+                (this.layoutParams as FrameLayout.LayoutParams).leftMargin = bulletCoordinate.left
+                this.rotation = currentDirection.rotation
+            }
     }
 
     private fun getBulletCoordinates(
-            bullet: ImageView,
-            myTank: View,
-            currentDirection: Direction
+        bullet: ImageView,
+        myTank: View,
+        currentDirection: Direction
     ): Coordinate {
         val tankLeftTopCoordinate = Coordinate(myTank.top, myTank.left)
         return when (currentDirection) {
             Direction.UP ->
                 Coordinate(
-                        top = tankLeftTopCoordinate.top - bullet.layoutParams.height,
-                        left = getDistanceToMiddleOfTank(tankLeftTopCoordinate.left, bullet.layoutParams.width))
+                    top = tankLeftTopCoordinate.top - bullet.layoutParams.height,
+                    left = getDistanceToMiddleOfTank(tankLeftTopCoordinate.left, bullet.layoutParams.width)
+                )
             Direction.BOTTOM ->
                 Coordinate(
-                        top = tankLeftTopCoordinate.top + myTank.layoutParams.height,
-                        left = getDistanceToMiddleOfTank(tankLeftTopCoordinate.left, bullet.layoutParams.width))
+                    top = tankLeftTopCoordinate.top + myTank.layoutParams.height,
+                    left = getDistanceToMiddleOfTank(tankLeftTopCoordinate.left, bullet.layoutParams.width)
+                )
             Direction.LEFT ->
                 Coordinate(
-                        top = getDistanceToMiddleOfTank(tankLeftTopCoordinate.top, bullet.layoutParams.height),
-                        left = tankLeftTopCoordinate.left - bullet.layoutParams.width)
+                    top = getDistanceToMiddleOfTank(tankLeftTopCoordinate.top, bullet.layoutParams.height),
+                    left = tankLeftTopCoordinate.left - bullet.layoutParams.width
+                )
             Direction.RIGHT ->
                 Coordinate(
-                        top = getDistanceToMiddleOfTank(tankLeftTopCoordinate.top, bullet.layoutParams.height),
-                        left = tankLeftTopCoordinate.left + myTank.layoutParams.width)
+                    top = getDistanceToMiddleOfTank(tankLeftTopCoordinate.top, bullet.layoutParams.height),
+                    left = tankLeftTopCoordinate.left + myTank.layoutParams.width
+                )
         }
     }
 

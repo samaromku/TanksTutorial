@@ -3,6 +3,7 @@ package ru.appngo.tankstutorial.models
 import android.view.View
 import android.widget.FrameLayout
 import ru.appngo.tankstutorial.CELL_SIZE
+import ru.appngo.tankstutorial.drawers.BulletDrawer
 import ru.appngo.tankstutorial.enums.Direction
 import ru.appngo.tankstutorial.enums.Material
 import ru.appngo.tankstutorial.utils.checkViewCanMoveThroughBorder
@@ -10,9 +11,10 @@ import ru.appngo.tankstutorial.utils.getElementByCoordinates
 import ru.appngo.tankstutorial.utils.runOnUiThread
 import kotlin.random.Random
 
-class Tank(
+class Tank constructor(
     val element: Element,
-    var direction: Direction
+    var direction: Direction,
+    val bulletDrawer: BulletDrawer
 ) {
     fun move(
         direction: Direction,
