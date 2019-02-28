@@ -5,10 +5,8 @@ import android.widget.FrameLayout
 import ru.appngo.tankstutorial.CELL_SIZE
 import ru.appngo.tankstutorial.drawers.BulletDrawer
 import ru.appngo.tankstutorial.enums.Direction
-import ru.appngo.tankstutorial.enums.Material
-import ru.appngo.tankstutorial.utils.checkViewCanMoveThroughBorder
-import ru.appngo.tankstutorial.utils.getElementByCoordinates
-import ru.appngo.tankstutorial.utils.runOnUiThread
+import ru.appngo.tankstutorial.enums.Material.ENEMY_TANK
+import ru.appngo.tankstutorial.utils.*
 import kotlin.random.Random
 
 class Tank constructor(
@@ -31,6 +29,7 @@ class Tank constructor(
         ) {
             emulateViewMoving(container, view)
             element.coordinate = nextCoordinate
+            generateRandomDirectionForEnemyTank()
         } else {
             element.coordinate = currentCoordinate
             (view.layoutParams as FrameLayout.LayoutParams).topMargin = currentCoordinate.top
@@ -39,8 +38,17 @@ class Tank constructor(
         }
     }
 
+    private fun generateRandomDirectionForEnemyTank() {
+        if (element.material != ENEMY_TANK) {
+            return
+        }
+        if (checkIfChanceBiggerThanRandom(10)) {
+            changeDirectionForEnemyTank()
+        }
+    }
+
     private fun changeDirectionForEnemyTank() {
-        if (element.material == Material.ENEMY_TANK) {
+        if (element.material == ENEMY_TANK) {
             val randomDirection = Direction.values()[Random.nextInt(Direction.values().size)]
             this.direction = randomDirection
         }
@@ -84,7 +92,10 @@ class Tank constructor(
         elementsOnContainer: List<Element>
     ): Boolean {
         for (anyCoordinate in getTankCoordinates(coordinate)) {
-            val element = getElementByCoordinates(anyCoordinate, elementsOnContainer)
+            var element = getElementByCoordinates(anyCoordinate, elementsOnContainer)
+            if (element == null) {
+                element = getTankByCoordinates(anyCoordinate, bulletDrawer.enemyDrawer.tanks)
+            }
             if (element != null && !element.material.tankCanGoThrough) {
                 if (this == element) {
                     continue

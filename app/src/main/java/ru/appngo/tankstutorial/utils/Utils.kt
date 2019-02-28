@@ -4,12 +4,15 @@ import android.app.Activity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import kotlinx.android.synthetic.main.activity_main.view.*
 import ru.appngo.tankstutorial.CELL_SIZE
 import ru.appngo.tankstutorial.HORIZONTAL_MAX_SIZE
 import ru.appngo.tankstutorial.VERTICAL_MAX_SIZE
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
+import ru.appngo.tankstutorial.models.Tank
+import kotlin.random.Random
+
+const val TOTAL_PERCENT = 100
 
 fun View.checkViewCanMoveThroughBorder(coordinate: Coordinate): Boolean {
     if (coordinate.top >= 0
@@ -39,6 +42,10 @@ fun getElementByCoordinates(coordinate: Coordinate, elementsOnContainer: List<El
     return null
 }
 
+fun getTankByCoordinates(coordinate: Coordinate, tanksList: List<Tank>): Element? {
+    return getElementByCoordinates(coordinate, tanksList.map { it.element })
+}
+
 fun Element.drawElement(container: FrameLayout) {
     val view = ImageView(container.context)
     val layoutParams = FrameLayout.LayoutParams(
@@ -61,4 +68,8 @@ fun FrameLayout.runOnUiThread(block: () -> Unit) {
     (this.context as Activity).runOnUiThread {
         block()
     }
+}
+
+fun checkIfChanceBiggerThanRandom(percentChance: Int): Boolean {
+    return Random.nextInt(TOTAL_PERCENT) <= percentChance
 }

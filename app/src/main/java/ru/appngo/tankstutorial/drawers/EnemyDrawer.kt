@@ -2,11 +2,14 @@ package ru.appngo.tankstutorial.drawers
 
 import android.widget.FrameLayout
 import ru.appngo.tankstutorial.CELL_SIZE
+import ru.appngo.tankstutorial.HALF_WIDTH_OF_CONTAINER
+import ru.appngo.tankstutorial.VERTICAL_MAX_SIZE
 import ru.appngo.tankstutorial.enums.Direction.BOTTOM
 import ru.appngo.tankstutorial.enums.Material.ENEMY_TANK
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
 import ru.appngo.tankstutorial.models.Tank
+import ru.appngo.tankstutorial.utils.checkIfChanceBiggerThanRandom
 import ru.appngo.tankstutorial.utils.drawElement
 
 private const val MAX_ENEMY_AMOUNT = 20
@@ -18,7 +21,8 @@ class EnemyDrawer(
     private val respawnList: List<Coordinate>
     private var enemyAmount = 0
     private var currentCoordinate: Coordinate
-    private val tanks = mutableListOf<Tank>()
+    val tanks = mutableListOf<Tank>()
+    private var moveAllTanksThread: Thread? = null
 
     init {
         respawnList = getRespawnList()
@@ -28,8 +32,8 @@ class EnemyDrawer(
     private fun getRespawnList(): List<Coordinate> {
         val respawnList = mutableListOf<Coordinate>()
         respawnList.add(Coordinate(0, 0))
-        respawnList.add(Coordinate(0, container.width / 2 - CELL_SIZE))
-        respawnList.add(Coordinate(0, container.width - 2 * CELL_SIZE))
+        respawnList.add(Coordinate(0, HALF_WIDTH_OF_CONTAINER - CELL_SIZE))
+        respawnList.add(Coordinate(0, VERTICAL_MAX_SIZE - 2 * CELL_SIZE))
         return respawnList
     }
 
@@ -53,38 +57,36 @@ class EnemyDrawer(
             Element(
                 material = ENEMY_TANK,
                 coordinate = currentCoordinate
-            ), BOTTOM, BulletDrawer(container)
+            ), BOTTOM, BulletDrawer(container, elements, this)
         )
         enemyTank.element.drawElement(container)
-        elements.add(enemyTank.element)
         tanks.add(enemyTank)
     }
 
     fun moveEnemyTanks() {
         Thread(Runnable {
             while (true) {
-                removeInconsistentTanks()
-                tanks.forEach {
-                    it.move(it.direction, container, elements)
-                    it.bulletDrawer.makeBulletMove(it, elements)
-                }
+                goThroughAllTanks()
                 Thread.sleep(400)
             }
         }).start()
     }
 
-    private fun removeInconsistentTanks() {
-        tanks.removeAll(getInconsistentTanks())
+    private fun goThroughAllTanks() {
+        moveAllTanksThread = Thread(Runnable {
+            tanks.forEach {
+                it.move(it.direction, container, elements)
+                if (checkIfChanceBiggerThanRandom(10)) {
+                    it.bulletDrawer.makeBulletMove(it)
+                }
+            }
+        })
+        moveAllTanksThread?.start()
     }
 
-    private fun getInconsistentTanks(): List<Tank> {
-        val removingTanks = mutableListOf<Tank>()
-        val allTanksElements = elements.filter { it.material == ENEMY_TANK }
-        tanks.forEach {
-            if (!allTanksElements.contains(it.element)) {
-                removingTanks.add(it)
-            }
-        }
-        return removingTanks
+    fun removeTank(tankIndex: Int) {
+        if (tankIndex < 0) return
+        moveAllTanksThread?.join()
+        tanks.removeAt(tankIndex)
     }
 }
