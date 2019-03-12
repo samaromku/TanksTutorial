@@ -35,7 +35,15 @@ class MainActivity : AppCompatActivity() {
             Element(
                 material = PLAYER_TANK,
                 coordinate = getPlayerTankCoordinate()
-            ), UP, BulletDrawer(container, elementsDrawer.elementsOnContainer, enemyDrawer)
+            ), UP, enemyDrawer
+        )
+    }
+
+    private val bulletDrawer by lazy {
+        BulletDrawer(
+            container,
+            elementsDrawer.elementsOnContainer,
+            enemyDrawer
         )
     }
 
@@ -74,6 +82,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        enemyDrawer.bulletDrawer = bulletDrawer
         container.layoutParams = FrameLayout.LayoutParams(VERTICAL_MAX_SIZE, HORIZONTAL_MAX_SIZE)
         editor_clear.setOnClickListener { elementsDrawer.currentMaterial = EMPTY }
         editor_brick.setOnClickListener { elementsDrawer.currentMaterial = BRICK }
@@ -147,7 +156,7 @@ class MainActivity : AppCompatActivity() {
             KEYCODE_DPAD_LEFT -> move(LEFT)
             KEYCODE_DPAD_DOWN -> move(BOTTOM)
             KEYCODE_DPAD_RIGHT -> move(RIGHT)
-            KEYCODE_SPACE -> playerTank.bulletDrawer.makeBulletMove(playerTank)
+            KEYCODE_SPACE -> bulletDrawer.addNewBulletForTank(playerTank)
         }
         return super.onKeyDown(keyCode, event)
     }

@@ -23,6 +23,7 @@ class EnemyDrawer(
     private var currentCoordinate: Coordinate
     val tanks = mutableListOf<Tank>()
     private var moveAllTanksThread: Thread? = null
+    lateinit var bulletDrawer: BulletDrawer
 
     init {
         respawnList = getRespawnList()
@@ -57,7 +58,7 @@ class EnemyDrawer(
             Element(
                 material = ENEMY_TANK,
                 coordinate = currentCoordinate
-            ), BOTTOM, BulletDrawer(container, elements, this)
+            ), BOTTOM, this
         )
         enemyTank.element.drawElement(container)
         tanks.add(enemyTank)
@@ -77,7 +78,7 @@ class EnemyDrawer(
             tanks.forEach {
                 it.move(it.direction, container, elements)
                 if (checkIfChanceBiggerThanRandom(10)) {
-                    it.bulletDrawer.makeBulletMove(it)
+                    bulletDrawer.addNewBulletForTank(it)
                 }
             }
         })
