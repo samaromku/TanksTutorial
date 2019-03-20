@@ -2,6 +2,7 @@ package ru.appngo.tankstutorial.drawers
 
 import android.widget.FrameLayout
 import ru.appngo.tankstutorial.CELL_SIZE
+import ru.appngo.tankstutorial.GameCore.isPlaying
 import ru.appngo.tankstutorial.HALF_WIDTH_OF_CONTAINER
 import ru.appngo.tankstutorial.VERTICAL_MAX_SIZE
 import ru.appngo.tankstutorial.enums.Direction.BOTTOM
@@ -23,6 +24,7 @@ class EnemyDrawer(
     private var currentCoordinate: Coordinate
     val tanks = mutableListOf<Tank>()
     lateinit var bulletDrawer: BulletDrawer
+    private var gameStarted = false
 
     init {
         respawnList = getRespawnList()
@@ -38,13 +40,21 @@ class EnemyDrawer(
     }
 
     fun startEnemyCreation() {
+        if (gameStarted) {
+            return
+        }
+        gameStarted = true
         Thread(Runnable {
             while (enemyAmount < MAX_ENEMY_AMOUNT) {
+                if (!isPlaying()) {
+                    continue
+                }
                 drawEnemy()
                 enemyAmount++
                 Thread.sleep(3000)
             }
         }).start()
+        moveEnemyTanks()
     }
 
     private fun drawEnemy() {
@@ -63,9 +73,12 @@ class EnemyDrawer(
         tanks.add(enemyTank)
     }
 
-    fun moveEnemyTanks() {
+    private fun moveEnemyTanks() {
         Thread(Runnable {
             while (true) {
+                if (!isPlaying()) {
+                    continue
+                }
                 goThroughAllTanks()
                 Thread.sleep(400)
             }

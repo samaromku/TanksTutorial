@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import ru.appngo.tankstutorial.CELL_SIZE
+import ru.appngo.tankstutorial.GameCore.isPlaying
 import ru.appngo.tankstutorial.R
 import ru.appngo.tankstutorial.enums.Direction
 import ru.appngo.tankstutorial.enums.Material
@@ -41,6 +42,9 @@ class BulletDrawer(
     private fun moveAllBullets() {
         Thread(Runnable {
             while (true) {
+                if (!isPlaying()) {
+                    continue
+                }
                 interactWithAllBullets()
                 Thread.sleep(30)
             }
@@ -70,7 +74,7 @@ class BulletDrawer(
         removeInconsistentBullets()
     }
 
-    private fun removeInconsistentBullets(){
+    private fun removeInconsistentBullets() {
         val removingList = allBullets.filter { !it.canMoveFurther }
         removingList.forEach {
             container.runOnUiThread {

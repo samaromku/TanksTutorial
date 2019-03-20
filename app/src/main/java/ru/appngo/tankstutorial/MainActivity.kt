@@ -1,6 +1,7 @@
 package ru.appngo.tankstutorial
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.KeyEvent.*
@@ -10,6 +11,8 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_main.*
+import ru.appngo.tankstutorial.GameCore.isPlaying
+import ru.appngo.tankstutorial.GameCore.startOrPauseTheGame
 import ru.appngo.tankstutorial.drawers.BulletDrawer
 import ru.appngo.tankstutorial.drawers.ElementsDrawer
 import ru.appngo.tankstutorial.drawers.EnemyDrawer
@@ -30,6 +33,7 @@ const val HALF_WIDTH_OF_CONTAINER = VERTICAL_MAX_SIZE / 2
 
 class MainActivity : AppCompatActivity() {
     private var editMode = false
+    private lateinit var item: MenuItem
     private val playerTank by lazy {
         Tank(
             Element(
@@ -102,6 +106,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.settings, menu)
+        item = menu.findItem(R.id.menu_play)
         return true
     }
 
@@ -116,7 +121,15 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_play -> {
-                startTheGame()
+                if (editMode) {
+                    return true
+                }
+                startOrPauseTheGame()
+                if (isPlaying()) {
+                    startTheGame()
+                } else {
+                    pauseTheGame()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -124,11 +137,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTheGame() {
-        if (editMode) {
-            return
-        }
+        item.icon = ContextCompat.getDrawable(this, R.drawable.ic_pause)
         enemyDrawer.startEnemyCreation()
-        enemyDrawer.moveEnemyTanks()
+    }
+
+    private fun pauseTheGame() {
+        item.icon = ContextCompat.getDrawable(this, R.drawable.ic_play)
+        GameCore.pauseTheGame()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pauseTheGame()
     }
 
     private fun switchEditMode() {
@@ -151,6 +171,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (!isPlaying()) {
+            return super.onKeyDown(keyCode, event)
+        }
         when (keyCode) {
             KEYCODE_DPAD_UP -> move(UP)
             KEYCODE_DPAD_LEFT -> move(LEFT)
