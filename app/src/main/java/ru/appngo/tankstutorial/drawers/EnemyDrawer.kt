@@ -4,6 +4,7 @@ import android.widget.FrameLayout
 import ru.appngo.tankstutorial.CELL_SIZE
 import ru.appngo.tankstutorial.GameCore.isPlaying
 import ru.appngo.tankstutorial.HALF_WIDTH_OF_CONTAINER
+import ru.appngo.tankstutorial.SoundManager
 import ru.appngo.tankstutorial.VERTICAL_MAX_SIZE
 import ru.appngo.tankstutorial.enums.Direction.BOTTOM
 import ru.appngo.tankstutorial.enums.Material.ENEMY_TANK
@@ -86,6 +87,11 @@ class EnemyDrawer(
     }
 
     private fun goThroughAllTanks() {
+        if (tanks.isNotEmpty()) {
+            SoundManager.tankMove()
+        } else {
+            SoundManager.tankStop()
+        }
         tanks.toList().forEach {
             it.move(it.direction, container, elements)
             if (checkIfChanceBiggerThanRandom(10)) {
@@ -95,7 +101,6 @@ class EnemyDrawer(
     }
 
     fun removeTank(tankIndex: Int) {
-        if (tankIndex < 0) return
         tanks.removeAt(tankIndex)
     }
 }

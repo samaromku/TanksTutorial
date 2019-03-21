@@ -86,6 +86,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        SoundManager.context = this
         enemyDrawer.bulletDrawer = bulletDrawer
         container.layoutParams = FrameLayout.LayoutParams(VERTICAL_MAX_SIZE, HORIZONTAL_MAX_SIZE)
         editor_clear.setOnClickListener { elementsDrawer.currentMaterial = EMPTY }
@@ -139,11 +140,13 @@ class MainActivity : AppCompatActivity() {
     private fun startTheGame() {
         item.icon = ContextCompat.getDrawable(this, R.drawable.ic_pause)
         enemyDrawer.startEnemyCreation()
+        SoundManager.playIntroMusic()
     }
 
     private fun pauseTheGame() {
         item.icon = ContextCompat.getDrawable(this, R.drawable.ic_play)
         GameCore.pauseTheGame()
+        SoundManager.pauseSounds()
     }
 
     override fun onPause() {
@@ -175,16 +178,31 @@ class MainActivity : AppCompatActivity() {
             return super.onKeyDown(keyCode, event)
         }
         when (keyCode) {
-            KEYCODE_DPAD_UP -> move(UP)
-            KEYCODE_DPAD_LEFT -> move(LEFT)
-            KEYCODE_DPAD_DOWN -> move(BOTTOM)
-            KEYCODE_DPAD_RIGHT -> move(RIGHT)
+            KEYCODE_DPAD_UP -> onButtonPressed(UP)
+            KEYCODE_DPAD_LEFT -> onButtonPressed(LEFT)
+            KEYCODE_DPAD_DOWN -> onButtonPressed(BOTTOM)
+            KEYCODE_DPAD_RIGHT -> onButtonPressed(RIGHT)
             KEYCODE_SPACE -> bulletDrawer.addNewBulletForTank(playerTank)
         }
         return super.onKeyDown(keyCode, event)
     }
 
-    private fun move(direction: Direction) {
+    private fun onButtonPressed(direction: Direction) {
+        SoundManager.tankMove()
         playerTank.move(direction, container, elementsDrawer.elementsOnContainer)
+    }
+
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        when (keyCode) {
+            KEYCODE_DPAD_UP, KEYCODE_DPAD_LEFT, KEYCODE_DPAD_DOWN, KEYCODE_DPAD_RIGHT -> onButtonReleased()
+        }
+        return super.onKeyUp(keyCode, event)
+    }
+
+    private fun onButtonReleased() {
+        if (enemyDrawer.tanks.isEmpty()) {
+            SoundManager.tankStop()
+        }
     }
 }

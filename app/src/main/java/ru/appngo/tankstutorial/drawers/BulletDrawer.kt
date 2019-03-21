@@ -7,6 +7,7 @@ import android.widget.ImageView
 import ru.appngo.tankstutorial.CELL_SIZE
 import ru.appngo.tankstutorial.GameCore.isPlaying
 import ru.appngo.tankstutorial.R
+import ru.appngo.tankstutorial.SoundManager
 import ru.appngo.tankstutorial.enums.Direction
 import ru.appngo.tankstutorial.enums.Material
 import ru.appngo.tankstutorial.models.Bullet
@@ -34,6 +35,7 @@ class BulletDrawer(
         val view = container.findViewById<View>(tank.element.viewId) ?: return
         if (tank.alreadyHasBullet()) return
         allBullets.add(Bullet(createBullet(view, tank.direction), tank.direction, tank))
+        SoundManager.bulletShot()
     }
 
     private fun Tank.alreadyHasBullet(): Boolean =
@@ -149,7 +151,10 @@ class BulletDrawer(
     private fun removeTank(element: Element) {
         val tanksElements = enemyDrawer.tanks.map { it.element }
         val tankIndex = tanksElements.indexOf(element)
+        if (tankIndex < 0) return
+        SoundManager.bulletBurst()
         enemyDrawer.removeTank(tankIndex)
+
     }
 
     private fun stopBullet(bullet: Bullet) {
