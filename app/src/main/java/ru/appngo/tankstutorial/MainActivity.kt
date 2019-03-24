@@ -4,22 +4,32 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
-import android.view.KeyEvent.*
+import android.view.KeyEvent.KEYCODE_DPAD_DOWN
+import android.view.KeyEvent.KEYCODE_DPAD_LEFT
+import android.view.KeyEvent.KEYCODE_DPAD_RIGHT
+import android.view.KeyEvent.KEYCODE_DPAD_UP
+import android.view.KeyEvent.KEYCODE_SPACE
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_main.*
-import ru.appngo.tankstutorial.GameCore.isPlaying
-import ru.appngo.tankstutorial.GameCore.startOrPauseTheGame
 import ru.appngo.tankstutorial.drawers.BulletDrawer
 import ru.appngo.tankstutorial.drawers.ElementsDrawer
 import ru.appngo.tankstutorial.drawers.EnemyDrawer
 import ru.appngo.tankstutorial.drawers.GridDrawer
 import ru.appngo.tankstutorial.enums.Direction
-import ru.appngo.tankstutorial.enums.Direction.*
-import ru.appngo.tankstutorial.enums.Material.*
+import ru.appngo.tankstutorial.enums.Direction.BOTTOM
+import ru.appngo.tankstutorial.enums.Direction.LEFT
+import ru.appngo.tankstutorial.enums.Direction.RIGHT
+import ru.appngo.tankstutorial.enums.Direction.UP
+import ru.appngo.tankstutorial.enums.Material.BRICK
+import ru.appngo.tankstutorial.enums.Material.CONCRETE
+import ru.appngo.tankstutorial.enums.Material.EAGLE
+import ru.appngo.tankstutorial.enums.Material.EMPTY
+import ru.appngo.tankstutorial.enums.Material.GRASS
+import ru.appngo.tankstutorial.enums.Material.PLAYER_TANK
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
 import ru.appngo.tankstutorial.models.Tank
@@ -36,35 +46,45 @@ class MainActivity : AppCompatActivity() {
     private lateinit var item: MenuItem
     private val playerTank by lazy {
         Tank(
-            Element(
-                material = PLAYER_TANK,
-                coordinate = getPlayerTankCoordinate()
-            ), UP, enemyDrawer
+                Element(
+                        material = PLAYER_TANK,
+                        coordinate = getPlayerTankCoordinate()
+                ), UP, enemyDrawer
         )
     }
 
     private val bulletDrawer by lazy {
         BulletDrawer(
-            container,
-            elementsDrawer.elementsOnContainer,
-            enemyDrawer
+                container,
+                elementsDrawer.elementsOnContainer,
+                enemyDrawer,
+                soundManager,
+                gameCore
         )
     }
 
+    private val gameCore by lazy {
+        GameCore(this)
+    }
+
+    private val soundManager by lazy {
+        SoundManager(this)
+    }
+
     private fun getPlayerTankCoordinate() = Coordinate(
-        top = HORIZONTAL_MAX_SIZE - PLAYER_TANK.height * CELL_SIZE,
-        left = HALF_WIDTH_OF_CONTAINER - 8 * CELL_SIZE
+            top = HORIZONTAL_MAX_SIZE - PLAYER_TANK.height * CELL_SIZE,
+            left = HALF_WIDTH_OF_CONTAINER - 8 * CELL_SIZE
     )
 
     private val eagle = Element(
-        material = EAGLE,
-        coordinate = getEagleCoordinate()
+            material = EAGLE,
+            coordinate = getEagleCoordinate()
     )
 
 
     private fun getEagleCoordinate() = Coordinate(
-        top = HORIZONTAL_MAX_SIZE - EAGLE.height * CELL_SIZE,
-        left = HALF_WIDTH_OF_CONTAINER - EAGLE.width * CELL_SIZE / 2
+            top = HORIZONTAL_MAX_SIZE - EAGLE.height * CELL_SIZE,
+            left = HALF_WIDTH_OF_CONTAINER - EAGLE.width * CELL_SIZE / 2
     )
 
     private val gridDrawer by lazy {
@@ -80,13 +100,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val enemyDrawer by lazy {
-        EnemyDrawer(container, elementsDrawer.elementsOnContainer)
+        EnemyDrawer(
+                container,
+                elementsDrawer.elementsOnContainer,
+                soundManager,
+                gameCore
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        SoundManager.context = this
         enemyDrawer.bulletDrawer = bulletDrawer
         container.layoutParams = FrameLayout.LayoutParams(VERTICAL_MAX_SIZE, HORIZONTAL_MAX_SIZE)
         editor_clear.setOnClickListener { elementsDrawer.currentMaterial = EMPTY }
@@ -125,8 +149,8 @@ class MainActivity : AppCompatActivity() {
                 if (editMode) {
                     return true
                 }
-                startOrPauseTheGame()
-                if (isPlaying()) {
+                gameCore.startOrPauseTheGame()
+                if (gameCore.isPlaying()) {
                     startTheGame()
                 } else {
                     pauseTheGame()
@@ -140,13 +164,13 @@ class MainActivity : AppCompatActivity() {
     private fun startTheGame() {
         item.icon = ContextCompat.getDrawable(this, R.drawable.ic_pause)
         enemyDrawer.startEnemyCreation()
-        SoundManager.playIntroMusic()
+        soundManager.playIntroMusic()
     }
 
     private fun pauseTheGame() {
         item.icon = ContextCompat.getDrawable(this, R.drawable.ic_play)
-        GameCore.pauseTheGame()
-        SoundManager.pauseSounds()
+        gameCore.pauseTheGame()
+        soundManager.pauseSounds()
     }
 
     override fun onPause() {
@@ -174,7 +198,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (!isPlaying()) {
+        if (!gameCore.isPlaying()) {
             return super.onKeyDown(keyCode, event)
         }
         when (keyCode) {
@@ -188,7 +212,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onButtonPressed(direction: Direction) {
-        SoundManager.tankMove()
+        soundManager.tankMove()
         playerTank.move(direction, container, elementsDrawer.elementsOnContainer)
     }
 
@@ -202,7 +226,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onButtonReleased() {
         if (enemyDrawer.tanks.isEmpty()) {
-            SoundManager.tankStop()
+            soundManager.tankStop()
         }
     }
 }
