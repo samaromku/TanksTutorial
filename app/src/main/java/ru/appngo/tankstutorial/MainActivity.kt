@@ -33,6 +33,7 @@ import ru.appngo.tankstutorial.enums.Material.PLAYER_TANK
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
 import ru.appngo.tankstutorial.models.Tank
+import ru.appngo.tankstutorial.sounds.MainSoundPlayer
 
 const val CELL_SIZE = 50
 const val VERTICAL_CELL_AMOUNT = 38
@@ -68,7 +69,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val soundManager by lazy {
-        SoundManager(this)
+        MainSoundPlayer(this)
     }
 
     private fun getPlayerTankCoordinate() = Coordinate(
@@ -111,6 +112,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        soundManager.loadSounds()
         enemyDrawer.bulletDrawer = bulletDrawer
         container.layoutParams = FrameLayout.LayoutParams(VERTICAL_MAX_SIZE, HORIZONTAL_MAX_SIZE)
         editor_clear.setOnClickListener { elementsDrawer.currentMaterial = EMPTY }

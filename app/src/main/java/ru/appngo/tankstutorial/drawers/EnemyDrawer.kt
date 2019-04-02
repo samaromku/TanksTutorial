@@ -7,6 +7,7 @@ import ru.appngo.tankstutorial.enums.Material.ENEMY_TANK
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
 import ru.appngo.tankstutorial.models.Tank
+import ru.appngo.tankstutorial.sounds.MainSoundPlayer
 import ru.appngo.tankstutorial.utils.checkIfChanceBiggerThanRandom
 import ru.appngo.tankstutorial.utils.drawElement
 
@@ -15,7 +16,7 @@ private const val MAX_ENEMY_AMOUNT = 20
 class EnemyDrawer(
     private val container: FrameLayout,
     private val elements: MutableList<Element>,
-    private val soundManager: SoundManager,
+    private val soundManager: MainSoundPlayer,
     private val gameCore: GameCore
 ) {
     private val respawnList: List<Coordinate>

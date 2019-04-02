@@ -7,7 +7,7 @@ import android.widget.ImageView
 import ru.appngo.tankstutorial.CELL_SIZE
 import ru.appngo.tankstutorial.GameCore
 import ru.appngo.tankstutorial.R
-import ru.appngo.tankstutorial.SoundManager
+import ru.appngo.tankstutorial.sounds.MainSoundPlayer
 import ru.appngo.tankstutorial.enums.Direction
 import ru.appngo.tankstutorial.enums.Material
 import ru.appngo.tankstutorial.models.Bullet
@@ -23,7 +23,7 @@ class BulletDrawer(
     private val container: FrameLayout,
     private val elements: MutableList<Element>,
     private val enemyDrawer: EnemyDrawer,
-    private val soundManager: SoundManager,
+    private val soundManager: MainSoundPlayer,
     private val gameCore: GameCore
 ) {
 
