@@ -19,6 +19,7 @@ import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.appngo.tankstutorial.GameCore
 import ru.appngo.tankstutorial.LevelStorage
+import ru.appngo.tankstutorial.ProgressIndicator
 import ru.appngo.tankstutorial.R
 import ru.appngo.tankstutorial.drawers.BulletDrawer
 import ru.appngo.tankstutorial.drawers.ElementsDrawer
@@ -47,7 +48,7 @@ const val VERTICAL_MAX_SIZE = CELL_SIZE * VERTICAL_CELL_AMOUNT
 const val HORIZONTAL_MAX_SIZE = CELL_SIZE * HORIZONTAL_CELL_AMOUNT
 const val HALF_WIDTH_OF_CONTAINER = VERTICAL_MAX_SIZE / 2
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ProgressIndicator {
     private var editMode = false
     private lateinit var item: MenuItem
     private val playerTank by lazy {
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val soundManager by lazy {
-        MainSoundPlayer(this)
+        MainSoundPlayer(this, this)
     }
 
     private fun getPlayerTankCoordinate() = Coordinate(
@@ -245,5 +246,17 @@ class MainActivity : AppCompatActivity() {
             recreate()
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun showProgress() {
+        container.visibility = GONE
+        total_container.setBackgroundResource(R.color.gray)
+        init_title.visibility = VISIBLE
+    }
+
+    override fun dismissProgress() {
+        container.visibility = VISIBLE
+        total_container.setBackgroundResource(R.color.black)
+        init_title.visibility = GONE
     }
 }

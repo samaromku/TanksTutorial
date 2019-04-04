@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/total_container"
     android:background="@android:color/black">
 
     <FrameLayout
@@ -52,6 +53,20 @@
             android:src="@drawable/grass"/>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/init_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/stage_1"
+        android:textColor="@color/black"
+        android:textAllCaps="true"
+        android:textSize="64sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <TextView
         android:id="@+id/game_over_text"
