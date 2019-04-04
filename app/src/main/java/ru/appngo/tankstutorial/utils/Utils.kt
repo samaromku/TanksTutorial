@@ -4,9 +4,9 @@ import android.app.Activity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import ru.appngo.tankstutorial.CELL_SIZE
-import ru.appngo.tankstutorial.HORIZONTAL_MAX_SIZE
-import ru.appngo.tankstutorial.VERTICAL_MAX_SIZE
+import ru.appngo.tankstutorial.activities.CELL_SIZE
+import ru.appngo.tankstutorial.activities.HORIZONTAL_MAX_SIZE
+import ru.appngo.tankstutorial.activities.VERTICAL_MAX_SIZE
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
 import ru.appngo.tankstutorial.models.Tank

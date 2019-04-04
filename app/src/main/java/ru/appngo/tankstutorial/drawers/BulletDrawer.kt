@@ -4,7 +4,7 @@ import android.app.Activity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import ru.appngo.tankstutorial.CELL_SIZE
+import ru.appngo.tankstutorial.activities.CELL_SIZE
 import ru.appngo.tankstutorial.GameCore
 import ru.appngo.tankstutorial.R
 import ru.appngo.tankstutorial.sounds.MainSoundPlayer
@@ -163,7 +163,6 @@ class BulletDrawer(
         if (tankIndex < 0) return
         soundManager.bulletBurst()
         enemyDrawer.removeTank(tankIndex)
-
     }
 
     private fun stopBullet(bullet: Bullet) {

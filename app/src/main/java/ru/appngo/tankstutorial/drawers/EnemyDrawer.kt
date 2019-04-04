@@ -2,6 +2,9 @@ package ru.appngo.tankstutorial.drawers
 
 import android.widget.FrameLayout
 import ru.appngo.tankstutorial.*
+import ru.appngo.tankstutorial.activities.CELL_SIZE
+import ru.appngo.tankstutorial.activities.HALF_WIDTH_OF_CONTAINER
+import ru.appngo.tankstutorial.activities.VERTICAL_MAX_SIZE
 import ru.appngo.tankstutorial.enums.Direction.BOTTOM
 import ru.appngo.tankstutorial.enums.Material.ENEMY_TANK
 import ru.appngo.tankstutorial.models.Coordinate
@@ -99,7 +102,16 @@ class EnemyDrawer(
         }
     }
 
+    private fun isAllTanksDestroyed(): Boolean {
+        return enemyAmount == MAX_ENEMY_AMOUNT && tanks.toList().isEmpty()
+    }
+
+    private fun getPlayerScore() = enemyAmount * 100
+
     fun removeTank(tankIndex: Int) {
         tanks.removeAt(tankIndex)
+        if (isAllTanksDestroyed()) {
+            gameCore.playerWon(getPlayerScore())
+        }
     }
 }

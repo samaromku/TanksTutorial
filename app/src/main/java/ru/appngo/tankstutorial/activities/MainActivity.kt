@@ -1,5 +1,7 @@
-package ru.appngo.tankstutorial
+package ru.appngo.tankstutorial.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -15,6 +17,9 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_main.*
+import ru.appngo.tankstutorial.GameCore
+import ru.appngo.tankstutorial.LevelStorage
+import ru.appngo.tankstutorial.R
 import ru.appngo.tankstutorial.drawers.BulletDrawer
 import ru.appngo.tankstutorial.drawers.ElementsDrawer
 import ru.appngo.tankstutorial.drawers.EnemyDrawer
@@ -114,7 +119,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         soundManager.loadSounds()
         enemyDrawer.bulletDrawer = bulletDrawer
-        container.layoutParams = FrameLayout.LayoutParams(VERTICAL_MAX_SIZE, HORIZONTAL_MAX_SIZE)
+        container.layoutParams = FrameLayout.LayoutParams(
+            VERTICAL_MAX_SIZE,
+            HORIZONTAL_MAX_SIZE
+        )
         editor_clear.setOnClickListener { elementsDrawer.currentMaterial = EMPTY }
         editor_brick.setOnClickListener { elementsDrawer.currentMaterial = BRICK }
         editor_concrete.setOnClickListener { elementsDrawer.currentMaterial = CONCRETE }
@@ -230,5 +238,12 @@ class MainActivity : AppCompatActivity() {
         if (enemyDrawer.tanks.isEmpty()) {
             soundManager.tankStop()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && requestCode == SCORE_REQUEST_CODE) {
+            recreate()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

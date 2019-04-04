@@ -2,7 +2,7 @@ package ru.appngo.tankstutorial.drawers
 
 import android.view.View
 import android.widget.FrameLayout
-import ru.appngo.tankstutorial.CELL_SIZE
+import ru.appngo.tankstutorial.activities.CELL_SIZE
 import ru.appngo.tankstutorial.enums.Material
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
