@@ -1,7 +1,7 @@
 package ru.appngo.tankstutorial.drawers
 
 import android.widget.FrameLayout
-import ru.appngo.tankstutorial.*
+import ru.appngo.tankstutorial.GameCore
 import ru.appngo.tankstutorial.activities.CELL_SIZE
 import ru.appngo.tankstutorial.activities.HALF_WIDTH_OF_CONTAINER
 import ru.appngo.tankstutorial.activities.VERTICAL_MAX_SIZE
@@ -28,6 +28,7 @@ class EnemyDrawer(
     val tanks = mutableListOf<Tank>()
     lateinit var bulletDrawer: BulletDrawer
     private var gameStarted = false
+    private var enemyMurders = 0
 
     init {
         respawnList = getRespawnList()
@@ -67,10 +68,10 @@ class EnemyDrawer(
         }
         currentCoordinate = respawnList[index]
         val enemyTank = Tank(
-            Element(
-                material = ENEMY_TANK,
-                coordinate = currentCoordinate
-            ), BOTTOM, this
+                Element(
+                        material = ENEMY_TANK,
+                        coordinate = currentCoordinate
+                ), BOTTOM, this
         )
         enemyTank.element.drawElement(container)
         tanks.add(enemyTank)
@@ -103,13 +104,14 @@ class EnemyDrawer(
     }
 
     private fun isAllTanksDestroyed(): Boolean {
-        return enemyAmount == MAX_ENEMY_AMOUNT && tanks.toList().isEmpty()
+        return enemyMurders == MAX_ENEMY_AMOUNT
     }
 
-    private fun getPlayerScore() = enemyAmount * 100
+    fun getPlayerScore() = enemyMurders * 100
 
     fun removeTank(tankIndex: Int) {
         tanks.removeAt(tankIndex)
+        enemyMurders++
         if (isAllTanksDestroyed()) {
             gameCore.playerWon(getPlayerScore())
         }

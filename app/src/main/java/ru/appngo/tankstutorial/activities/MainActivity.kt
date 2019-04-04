@@ -51,6 +51,7 @@ const val HALF_WIDTH_OF_CONTAINER = VERTICAL_MAX_SIZE / 2
 class MainActivity : AppCompatActivity(), ProgressIndicator {
     private var editMode = false
     private lateinit var item: MenuItem
+    private var gameStarted = false
     private val playerTank by lazy {
         Tank(
                 Element(
@@ -118,7 +119,6 @@ class MainActivity : AppCompatActivity(), ProgressIndicator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        soundManager.loadSounds()
         enemyDrawer.bulletDrawer = bulletDrawer
         container.layoutParams = FrameLayout.LayoutParams(
             VERTICAL_MAX_SIZE,
@@ -160,11 +160,14 @@ class MainActivity : AppCompatActivity(), ProgressIndicator {
                 if (editMode) {
                     return true
                 }
-                gameCore.startOrPauseTheGame()
-                if (gameCore.isPlaying()) {
-                    startTheGame()
-                } else {
-                    pauseTheGame()
+                showIntro()
+                if(soundManager.areSoundsReady()) {
+                    gameCore.startOrPauseTheGame()
+                    if (gameCore.isPlaying()) {
+                        resumeTheGame()
+                    } else {
+                        pauseTheGame()
+                    }
                 }
                 true
             }
@@ -172,10 +175,17 @@ class MainActivity : AppCompatActivity(), ProgressIndicator {
         }
     }
 
-    private fun startTheGame() {
+    private fun resumeTheGame() {
         item.icon = ContextCompat.getDrawable(this, R.drawable.ic_pause)
-        enemyDrawer.startEnemyCreation()
-        soundManager.playIntroMusic()
+        gameCore.resumeTheGame()
+    }
+
+    private fun showIntro() {
+        if(gameStarted){
+            return
+        }
+        gameStarted = true
+        soundManager.loadSounds()
     }
 
     private fun pauseTheGame() {
@@ -229,6 +239,9 @@ class MainActivity : AppCompatActivity(), ProgressIndicator {
 
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        if (!gameCore.isPlaying()) {
+            return super.onKeyUp(keyCode, event)
+        }
         when (keyCode) {
             KEYCODE_DPAD_UP, KEYCODE_DPAD_LEFT, KEYCODE_DPAD_DOWN, KEYCODE_DPAD_RIGHT -> onButtonReleased()
         }
@@ -258,5 +271,8 @@ class MainActivity : AppCompatActivity(), ProgressIndicator {
         container.visibility = VISIBLE
         total_container.setBackgroundResource(R.color.black)
         init_title.visibility = GONE
+        enemyDrawer.startEnemyCreation()
+        soundManager.playIntroMusic()
+        resumeTheGame()
     }
 }

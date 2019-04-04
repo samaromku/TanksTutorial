@@ -2,6 +2,7 @@ package ru.appngo.tankstutorial
 
 import android.app.Activity
 import android.view.View
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import ru.appngo.tankstutorial.activities.SCORE_REQUEST_CODE
@@ -23,23 +24,36 @@ class GameCore(private val activity: Activity) {
         isPlay = false
     }
 
+    fun resumeTheGame(){
+        isPlay = true
+    }
+
     fun playerWon(score: Int) {
         isPlayerWin = true
         activity.startActivityForResult(ScoreActivity.createIntent(activity, score), SCORE_REQUEST_CODE)
     }
 
-    fun destroyPlayerOrBase() {
+    fun destroyPlayerOrBase(score: Int) {
         isPlayerOrBaseDestroyed = true
         pauseTheGame()
-        animateEndGame()
+        animateEndGame(score)
     }
 
-    private fun animateEndGame() {
+    private fun animateEndGame(score: Int) {
         activity.runOnUiThread {
             val endGameText = activity.findViewById<TextView>(R.id.game_over_text)
             endGameText.visibility = View.VISIBLE
             val slideUp = AnimationUtils.loadAnimation(activity, R.anim.slide_up)
             endGameText.startAnimation(slideUp)
+            slideUp.setAnimationListener(object :Animation.AnimationListener{
+                override fun onAnimationRepeat(animation: Animation?) {}
+
+                override fun onAnimationStart(animation: Animation?) {}
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    activity.startActivityForResult(ScoreActivity.createIntent(activity, score), SCORE_REQUEST_CODE)
+                }
+            })
         }
     }
 }

@@ -4,17 +4,21 @@ import android.app.Activity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import ru.appngo.tankstutorial.activities.CELL_SIZE
 import ru.appngo.tankstutorial.GameCore
 import ru.appngo.tankstutorial.R
-import ru.appngo.tankstutorial.sounds.MainSoundPlayer
+import ru.appngo.tankstutorial.activities.CELL_SIZE
 import ru.appngo.tankstutorial.enums.Direction
 import ru.appngo.tankstutorial.enums.Material
 import ru.appngo.tankstutorial.models.Bullet
 import ru.appngo.tankstutorial.models.Coordinate
 import ru.appngo.tankstutorial.models.Element
 import ru.appngo.tankstutorial.models.Tank
-import ru.appngo.tankstutorial.utils.*
+import ru.appngo.tankstutorial.sounds.MainSoundPlayer
+import ru.appngo.tankstutorial.utils.checkViewCanMoveThroughBorder
+import ru.appngo.tankstutorial.utils.getElementByCoordinates
+import ru.appngo.tankstutorial.utils.getTankByCoordinates
+import ru.appngo.tankstutorial.utils.getViewCoordinate
+import ru.appngo.tankstutorial.utils.runOnUiThread
 
 private const val BULLET_WIDTH = 15
 private const val BULLET_HEIGHT = 25
@@ -41,7 +45,7 @@ class BulletDrawer(
     }
 
     private fun Tank.alreadyHasBullet(): Boolean =
-        allBullets.firstOrNull { it.tank == this } != null
+            allBullets.firstOrNull { it.tank == this } != null
 
     private fun moveAllBullets() {
         Thread(Runnable {
@@ -104,7 +108,7 @@ class BulletDrawer(
     }
 
     private fun Bullet.canBulletGoFurther() =
-        this.view.checkViewCanMoveThroughBorder(this.view.getViewCoordinate()) && this.canMoveFurther
+            this.view.checkViewCanMoveThroughBorder(this.view.getViewCoordinate()) && this.canMoveFurther
 
     private fun chooseBehaviorInTermsOfDirections(bullet: Bullet) {
         when (bullet.direction) {
@@ -151,13 +155,13 @@ class BulletDrawer(
         }
     }
 
-    private fun removeElement(element: Element){
+    private fun removeElement(element: Element) {
         elements.remove(element)
     }
 
     private fun stopGameIfNecessary(element: Element) {
         if (element.material == Material.PLAYER_TANK || element.material == Material.EAGLE) {
-            gameCore.destroyPlayerOrBase()
+            gameCore.destroyPlayerOrBase(enemyDrawer.getPlayerScore())
         }
     }
 
@@ -186,8 +190,8 @@ class BulletDrawer(
         val rightCell = leftCell + CELL_SIZE
         val topCoordinate = bulletCoordinate.top - bulletCoordinate.top % CELL_SIZE
         return listOf(
-            Coordinate(topCoordinate, leftCell),
-            Coordinate(topCoordinate, rightCell)
+                Coordinate(topCoordinate, leftCell),
+                Coordinate(topCoordinate, rightCell)
         )
     }
 
@@ -197,21 +201,21 @@ class BulletDrawer(
         val bottomCell = topCell + CELL_SIZE
         val leftCoordinate = bulletCoordinate.left - bulletCoordinate.left % CELL_SIZE
         return listOf(
-            Coordinate(topCell, leftCoordinate),
-            Coordinate(bottomCell, leftCoordinate)
+                Coordinate(topCell, leftCoordinate),
+                Coordinate(bottomCell, leftCoordinate)
         )
     }
 
     private fun createBullet(myTank: View, currentDirection: Direction): ImageView {
         return ImageView(container.context)
-            .apply {
-                this.setImageResource(R.drawable.bullet)
-                this.layoutParams = FrameLayout.LayoutParams(BULLET_WIDTH, BULLET_HEIGHT)
-                val bulletCoordinate = getBulletCoordinates(this, myTank, currentDirection)
-                (this.layoutParams as FrameLayout.LayoutParams).topMargin = bulletCoordinate.top
-                (this.layoutParams as FrameLayout.LayoutParams).leftMargin = bulletCoordinate.left
-                this.rotation = currentDirection.rotation
-            }
+                .apply {
+                    this.setImageResource(R.drawable.bullet)
+                    this.layoutParams = FrameLayout.LayoutParams(BULLET_WIDTH, BULLET_HEIGHT)
+                    val bulletCoordinate = getBulletCoordinates(this, myTank, currentDirection)
+                    (this.layoutParams as FrameLayout.LayoutParams).topMargin = bulletCoordinate.top
+                    (this.layoutParams as FrameLayout.LayoutParams).leftMargin = bulletCoordinate.left
+                    this.rotation = currentDirection.rotation
+                }
     }
 
     private fun getBulletCoordinates(
@@ -223,23 +227,23 @@ class BulletDrawer(
         return when (currentDirection) {
             Direction.UP ->
                 Coordinate(
-                    top = tankLeftTopCoordinate.top - bullet.layoutParams.height,
-                    left = getDistanceToMiddleOfTank(tankLeftTopCoordinate.left, bullet.layoutParams.width)
+                        top = tankLeftTopCoordinate.top - bullet.layoutParams.height,
+                        left = getDistanceToMiddleOfTank(tankLeftTopCoordinate.left, bullet.layoutParams.width)
                 )
             Direction.BOTTOM ->
                 Coordinate(
-                    top = tankLeftTopCoordinate.top + myTank.layoutParams.height,
-                    left = getDistanceToMiddleOfTank(tankLeftTopCoordinate.left, bullet.layoutParams.width)
+                        top = tankLeftTopCoordinate.top + myTank.layoutParams.height,
+                        left = getDistanceToMiddleOfTank(tankLeftTopCoordinate.left, bullet.layoutParams.width)
                 )
             Direction.LEFT ->
                 Coordinate(
-                    top = getDistanceToMiddleOfTank(tankLeftTopCoordinate.top, bullet.layoutParams.height),
-                    left = tankLeftTopCoordinate.left - bullet.layoutParams.width
+                        top = getDistanceToMiddleOfTank(tankLeftTopCoordinate.top, bullet.layoutParams.height),
+                        left = tankLeftTopCoordinate.left - bullet.layoutParams.width
                 )
             Direction.RIGHT ->
                 Coordinate(
-                    top = getDistanceToMiddleOfTank(tankLeftTopCoordinate.top, bullet.layoutParams.height),
-                    left = tankLeftTopCoordinate.left + myTank.layoutParams.width
+                        top = getDistanceToMiddleOfTank(tankLeftTopCoordinate.top, bullet.layoutParams.height),
+                        left = tankLeftTopCoordinate.left + myTank.layoutParams.width
                 )
         }
     }
