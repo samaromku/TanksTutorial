@@ -2,7 +2,9 @@ package ru.appngo.tankstutorial
 
 import android.app.Activity
 import android.content.Context
+import android.support.annotation.LayoutRes
 import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 
@@ -12,6 +14,18 @@ fun View.moveTo(margin: Margin) {
     layoutParams.topMargin += margin.bottom
     layoutParams.leftMargin -= margin.left
     layoutParams.leftMargin += margin.right
+}
+
+fun FrameLayout.createViewWithMargin(@LayoutRes layout: Int, margin: Margin): View {
+    return LayoutInflater.from(this.context).inflate(layout, this, false).apply {
+        moveTo(margin)
+    }
+}
+
+fun FrameLayout.createViewWithMarginAddToContainer(@LayoutRes layout: Int, margin: Margin): View {
+    val view = createViewWithMargin(layout, margin)
+    this.addView(view)
+    return view
 }
 
 const val NUMBER_OF_CELLS_IN_SQUARE_SIDE = 26
