@@ -11,25 +11,36 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        container.assignDimensions(Dimensions(getContainerSide(this)))
+        myTank.assignDimensions(Dimensions(getTankSide(this)))
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        val layoutParams = myTank.layoutParams as FrameLayout.LayoutParams
         when (keyCode) {
             KEYCODE_DPAD_UP -> {
                 myTank.rotation = 0f
-                (myTank.layoutParams as FrameLayout.LayoutParams).topMargin += -50
+                if (layoutParams.topMargin > 0) {
+                    myTank.moveTo(Margin(top = getCellSize(this)))
+                }
             }
             KEYCODE_DPAD_LEFT -> {
                 myTank.rotation = 270f
-                (myTank.layoutParams as FrameLayout.LayoutParams).leftMargin += -50
+                if (layoutParams.leftMargin > 0) {
+                    myTank.moveTo(Margin(left = getCellSize(this)))
+                }
             }
             KEYCODE_DPAD_DOWN -> {
                 myTank.rotation = 180f
-                (myTank.layoutParams as FrameLayout.LayoutParams).topMargin += 50
+                if (layoutParams.topMargin + myTank.height < getContainerSide(this)) {
+                    myTank.moveTo(Margin(bottom = getCellSize(this)))
+                }
             }
             KEYCODE_DPAD_RIGHT -> {
                 myTank.rotation = 90f
-                (myTank.layoutParams as FrameLayout.LayoutParams).leftMargin += 50
+                if (layoutParams.leftMargin + myTank.width < getContainerSide(this)) {
+                    myTank.moveTo(Margin(right = getCellSize(this)))
+                }
             }
         }
         myTank.requestLayout()
