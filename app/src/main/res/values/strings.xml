@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TanksTutorial</string>
+    <string name="settings">settings</string>
 </resources>

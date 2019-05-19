@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.KeyEvent.*
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -11,6 +13,10 @@ const val NUMBER_OF_CELLS_IN_SQUARE_SIDE = 26
 const val TANK_SIDE_CELLS = 2
 
 class MainActivity : AppCompatActivity() {
+
+    private val gridDrawer by lazy {
+        GridDrawer(container, cellSize)
+    }
 
     private var cellSize = 0
 
@@ -37,6 +43,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun getTankSide() = cellSize * TANK_SIDE_CELLS
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.settings, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_settings -> {
+                gridDrawer.drawGrid()
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         val layoutParams = myTank.layoutParams as FrameLayout.LayoutParams
